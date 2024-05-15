@@ -17,6 +17,8 @@ onmessage = async function (event) {
 
             try {
                 let simResult = await combatSimulator.simulate(simulationTimeLimit);
+                // bot7420
+                simResult.zoneHrid = event.data.zoneHrid;
                 this.postMessage({ type: "simulation_result", simResult: simResult });
             } catch (e) {
                 this.postMessage({ type: "simulation_error", error: e });
