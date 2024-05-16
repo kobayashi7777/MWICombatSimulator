@@ -1730,19 +1730,49 @@ function startSimulation() {
     let simulationTimeLimit = Number(simulationTimeInput.value) * ONE_HOUR;
 
     // bot7420 All zones
+    const plannetToggle = document.getElementById("plannetToggle");
     let zones = Object.values(actionDetailMap)
         .filter((action) => action.type == "/action_types/combat")
         .sort((a, b) => a.sortIndex - b.sortIndex);
-    allResults = [];
-    numOfZones = zones.length;
+    let planetZones = [];
     for (const zone of Object.values(zones)) {
-        let workerMessage = {
-            type: "start_simulation",
-            player: player,
-            zoneHrid: zone.hrid,
-            simulationTimeLimit: simulationTimeLimit,
-        };
-        worker.postMessage(workerMessage);
+        if (
+            !zone.hrid.includes("planet") &&
+            !zone.hrid.includes("tower") &&
+            !zone.hrid.includes("with") &&
+            !zone.hrid.includes("cave") &&
+            !zone.hrid.includes("zone") &&
+            !zone.hrid.includes("_abyss")
+        ) {
+            continue;
+        }
+        planetZones.push(zone);
+    }
+
+    allResults = [];
+
+    if (plannetToggle.checked) {
+        numOfZones = planetZones.length;
+        for (const zone of Object.values(planetZones)) {
+            let workerMessage = {
+                type: "start_simulation",
+                player: player,
+                zoneHrid: zone.hrid,
+                simulationTimeLimit: simulationTimeLimit,
+            };
+            worker.postMessage(workerMessage);
+        }
+    } else {
+        numOfZones = zones.length;
+        for (const zone of Object.values(zones)) {
+            let workerMessage = {
+                type: "start_simulation",
+                player: player,
+                zoneHrid: zone.hrid,
+                simulationTimeLimit: simulationTimeLimit,
+            };
+            worker.postMessage(workerMessage);
+        }
     }
 }
 
