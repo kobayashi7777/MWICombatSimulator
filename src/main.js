@@ -831,6 +831,14 @@ function handleAllResults(allResults) {
         result.ranged = Math.round(result?.experienceGained?.player.ranged / (result.simulatedTime / 3600000000000));
         result.magic = Math.round(result?.experienceGained?.player.magic / (result.simulatedTime / 3600000000000));
         result.attack = Math.round(result?.experienceGained?.player.attack / (result.simulatedTime / 3600000000000));
+
+        result.zoneName = result.zoneHrid
+            .replaceAll("/actions/combat/", "")
+            .split("_")
+            .map((word) => {
+                return word[0].toUpperCase() + word.substring(1);
+            })
+            .join(" ");
     }
 
     allResults.sort(function (x, y) {
@@ -857,7 +865,7 @@ function handleAllResults(allResults) {
       <th>Attack</th>
     </tr>`;
     for (const result of allResults) {
-        html += `<tr><th>${result.zoneHrid.replace("/actions/combat/", "")}</th> <th>${result.totalExp}</th> <th>${
+        html += `<tr><th>${result.zoneName}</th> <th>${result.totalExp}</th> <th>${
             result?.deaths?.player
                 ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
                 : 0
@@ -886,7 +894,7 @@ function handleAllResults(allResults) {
       <th>Attack</th>
     </tr>`;
     for (const result of allResults) {
-        html += `<tr><th>${result.zoneHrid.replace("/actions/combat/", "")}</th> <th>${result.totalExp}</th> <th>${
+        html += `<tr><th>${result.zoneName}</th> <th>${result.totalExp}</th> <th>${
             result?.deaths?.player
                 ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
                 : 0
@@ -915,7 +923,7 @@ function handleAllResults(allResults) {
       <th>Attack</th>
     </tr>`;
     for (const result of allResults) {
-        html += `<tr><th>${result.zoneHrid.replace("/actions/combat/", "")}</th> <th>${result.totalExp}</th> <th>${
+        html += `<tr><th>${result.zoneName}</th> <th>${result.totalExp}</th> <th>${
             result?.deaths?.player
                 ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
                 : 0
@@ -944,7 +952,7 @@ function handleAllResults(allResults) {
       <th>Attack</th>
     </tr>`;
     for (const result of allResults) {
-        html += `<tr><th>${result.zoneHrid.replace("/actions/combat/", "")}</th> <th>${result.totalExp}</th> <th>${
+        html += `<tr><th>${result.zoneName}</th> <th>${result.totalExp}</th> <th>${
             result?.deaths?.player
                 ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
                 : 0
