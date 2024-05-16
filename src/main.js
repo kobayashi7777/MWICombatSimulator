@@ -828,6 +828,9 @@ function handleAllResults(allResults) {
             totalExp += exp;
         }
         result.totalExp = Math.round(totalExp / (result.simulatedTime / 3600000000000));
+        result.ranged = Math.round(result?.experienceGained?.player.ranged / (result.simulatedTime / 3600000000000));
+        result.magic = Math.round(result?.experienceGained?.player.magic / (result.simulatedTime / 3600000000000));
+        result.attack = Math.round(result?.experienceGained?.player.attack / (result.simulatedTime / 3600000000000));
     }
 
     allResults.sort(function (x, y) {
@@ -842,18 +845,110 @@ function handleAllResults(allResults) {
     console.log(allResults);
 
     let html = "";
+    html += `<div>-------------------------------------</div>`;
+    html += `<div>按总经验排序：</div>`;
     html += `<table>
     <tr>
       <th>地图名</th>
       <th>每小时总经验</th>
       <th>每小时死亡次数</th>
+      <th>Magic</th>
+      <th>Ranged</th>
+      <th>Attack</th>
     </tr>`;
     for (const result of allResults) {
         html += `<tr><th>${result.zoneHrid.replace("/actions/combat/", "")}</th> <th>${result.totalExp}</th> <th>${
             result?.deaths?.player
                 ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
                 : 0
-        }</th></tr>`;
+        }</th> <th>${result.magic}</th> <th>${result.ranged}</th> <th>${result.attack}</th></tr>`;
+    }
+    html += `</table>`;
+
+    allResults.sort(function (x, y) {
+        if (x.magic < y.magic) {
+            return 1;
+        }
+        if (x.magic > y.magic) {
+            return -1;
+        }
+        return 0;
+    });
+    html += `<div>-------------------------------------</div>`;
+    html += `<div>按Magic经验排序：</div>`;
+    html += `<table>
+    <tr>
+      <th>地图名</th>
+      <th>每小时总经验</th>
+      <th>每小时死亡次数</th>
+      <th>Magic</th>
+      <th>Ranged</th>
+      <th>Attack</th>
+    </tr>`;
+    for (const result of allResults) {
+        html += `<tr><th>${result.zoneHrid.replace("/actions/combat/", "")}</th> <th>${result.totalExp}</th> <th>${
+            result?.deaths?.player
+                ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
+                : 0
+        }</th> <th>${result.magic}</th> <th>${result.ranged}</th> <th>${result.attack}</th></tr>`;
+    }
+    html += `</table>`;
+
+    allResults.sort(function (x, y) {
+        if (x.ranged < y.ranged) {
+            return 1;
+        }
+        if (x.ranged > y.ranged) {
+            return -1;
+        }
+        return 0;
+    });
+    html += `<div>-------------------------------------</div>`;
+    html += `<div>按Ranged经验排序：</div>`;
+    html += `<table>
+    <tr>
+      <th>地图名</th>
+      <th>每小时总经验</th>
+      <th>每小时死亡次数</th>
+      <th>Magic</th>
+      <th>Ranged</th>
+      <th>Attack</th>
+    </tr>`;
+    for (const result of allResults) {
+        html += `<tr><th>${result.zoneHrid.replace("/actions/combat/", "")}</th> <th>${result.totalExp}</th> <th>${
+            result?.deaths?.player
+                ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
+                : 0
+        }</th> <th>${result.magic}</th> <th>${result.ranged}</th> <th>${result.attack}</th></tr>`;
+    }
+    html += `</table>`;
+
+    allResults.sort(function (x, y) {
+        if (x.attack < y.attack) {
+            return 1;
+        }
+        if (x.attack > y.attack) {
+            return -1;
+        }
+        return 0;
+    });
+    html += `<div>-------------------------------------</div>`;
+    html += `<div>按Attack经验排序：</div>`;
+    html += `<table>
+    <tr>
+      <th>地图名</th>
+      <th>每小时总经验</th>
+      <th>每小时死亡次数</th>
+      <th>Magic</th>
+      <th>Ranged</th>
+      <th>Attack</th>
+    </tr>`;
+    for (const result of allResults) {
+        html += `<tr><th>${result.zoneHrid.replace("/actions/combat/", "")}</th> <th>${result.totalExp}</th> <th>${
+            result?.deaths?.player
+                ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
+                : 0
+        }</th> <th>${result.magic}</th> <th>${result.ranged}</th> <th>${result.attack}</th></tr>`;
     }
     html += `</table>`;
 
