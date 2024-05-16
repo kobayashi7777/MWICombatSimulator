@@ -881,8 +881,8 @@ function handleAllResults(allResults) {
           <th scope="col">Defense</th>
           <th scope="col">Ranged</th>
           <th scope="col">Magic</th>
-          <th scope="col">收入卖单</th>
-          <th scope="col">开销买单</th>
+          <th scope="col">收入买单</th>
+          <th scope="col">开销卖单</th>
           <th scope="col">净利润</th>
         </tr>
         </thead><tbody>`;
@@ -1098,21 +1098,8 @@ function showKills(simResult) {
         if (window.prices) {
             let item = window.prices[name];
             if (item) {
-                if (revenueSetting == "bid") {
-                    if (item["bid"] !== -1) {
-                        price = item["bid"];
-                    } else if (item["ask"] !== -1) {
-                        price = item["ask"];
-                    }
-                } else if (revenueSetting == "ask") {
-                    if (item["ask"] !== -1) {
-                        price = item["ask"];
-                    } else if (item["bid"] !== -1) {
-                        price = item["bid"];
-                    }
-                }
-                if (price == -1) {
-                    price = item["vendor"];
+                if (item["bid"] !== -1) {
+                    price = item["bid"];
                 }
             }
         }
