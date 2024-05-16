@@ -867,13 +867,12 @@ function handleAllResults(allResults) {
             return 0;
         });
 
-        html += `<div style="color: red;">每小时：</div>`;
         html += `<table class="table table-striped table-hover" id="sortTable">
         <thead>
         <tr>
           <th scope="col">地图名</th>
-          <th scope="col">死亡</th>
-          <th scope="col">总经验</th>
+          <th scope="col">死亡(小时)</th>
+          <th scope="col">总经验(小时)</th>
           <th scope="col">Stamina</th>
           <th scope="col">Intelligence</th>
           <th scope="col">Attack</th>
