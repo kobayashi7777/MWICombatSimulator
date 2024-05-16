@@ -44,12 +44,8 @@ worker.onmessage = function (event) {
             progressbar.style.width = "100%";
             progressbar.innerHTML = "100%";
             showSimulationResult(event.data.simResult);
-            buttonStartSimulation.disabled = false;
             break;
         case "simulation_progress":
-            let progress = Math.floor(100 * event.data.progress);
-            progressbar.style.width = progress + "%";
-            progressbar.innerHTML = progress + "%";
             break;
         case "simulation_error":
             showErrorModal(event.data.error.toString());
@@ -827,10 +823,24 @@ function handleAllResults(allResults) {
         for (const exp of Object.values(result?.experienceGained?.player)) {
             totalExp += exp;
         }
-        result.totalExp = Math.round(totalExp / (result.simulatedTime / 3600000000000));
-        result.ranged = Math.round(result?.experienceGained?.player.ranged / (result.simulatedTime / 3600000000000));
-        result.magic = Math.round(result?.experienceGained?.player.magic / (result.simulatedTime / 3600000000000));
-        result.attack = Math.round(result?.experienceGained?.player.attack / (result.simulatedTime / 3600000000000));
+        result.total = Math.round(totalExp / (result.simulatedTime / 3600000000000));
+        result.stamina = Math.round(
+            result?.experienceGained?.player.stamina ?? 0 / (result.simulatedTime / 3600000000000)
+        );
+        result.intelligence = Math.round(
+            result?.experienceGained?.player.intelligence ?? 0 / (result.simulatedTime / 3600000000000)
+        );
+        result.attack = Math.round(
+            result?.experienceGained?.player.attack ?? 0 / (result.simulatedTime / 3600000000000)
+        );
+        result.power = Math.round(result?.experienceGained?.player.power ?? 0 / (result.simulatedTime / 3600000000000));
+        result.defense = Math.round(
+            result?.experienceGained?.player.defense ?? 0 / (result.simulatedTime / 3600000000000)
+        );
+        result.ranged = Math.round(
+            result?.experienceGained?.player.ranged ?? 0 / (result.simulatedTime / 3600000000000)
+        );
+        result.magic = Math.round(result?.experienceGained?.player.magic ?? 0 / (result.simulatedTime / 3600000000000));
 
         result.zoneName = result.zoneHrid
             .replaceAll("/actions/combat/", "")
@@ -839,128 +849,83 @@ function handleAllResults(allResults) {
                 return word[0].toUpperCase() + word.substring(1);
             })
             .join(" ");
-    }
 
-    allResults.sort(function (x, y) {
-        if (x.totalExp < y.totalExp) {
-            return 1;
-        }
-        if (x.totalExp > y.totalExp) {
-            return -1;
-        }
-        return 0;
-    });
+        result.profit = result.revenue - result.expenses;
+    }
     console.log(allResults);
 
     let html = "";
-    html += `<div>-------------------------------------</div>`;
-    html += `<div>按总经验排序：</div>`;
-    html += `<table>
-    <tr>
-      <th>地图名</th>
-      <th>每小时总经验</th>
-      <th>每小时死亡次数</th>
-      <th>Magic</th>
-      <th>Ranged</th>
-      <th>Attack</th>
-    </tr>`;
-    for (const result of allResults) {
-        html += `<tr><th>${result.zoneName}</th> <th>${result.totalExp}</th> <th>${
-            result?.deaths?.player
-                ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
-                : 0
-        }</th> <th>${result.magic}</th> <th>${result.ranged}</th> <th>${result.attack}</th></tr>`;
-    }
-    html += `</table>`;
 
-    allResults.sort(function (x, y) {
-        if (x.magic < y.magic) {
-            return 1;
-        }
-        if (x.magic > y.magic) {
-            return -1;
-        }
-        return 0;
-    });
-    html += `<div>-------------------------------------</div>`;
-    html += `<div>按Magic经验排序：</div>`;
-    html += `<table>
-    <tr>
-      <th>地图名</th>
-      <th>每小时总经验</th>
-      <th>每小时死亡次数</th>
-      <th>Magic</th>
-      <th>Ranged</th>
-      <th>Attack</th>
-    </tr>`;
-    for (const result of allResults) {
-        html += `<tr><th>${result.zoneName}</th> <th>${result.totalExp}</th> <th>${
-            result?.deaths?.player
-                ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
-                : 0
-        }</th> <th>${result.magic}</th> <th>${result.ranged}</th> <th>${result.attack}</th></tr>`;
-    }
-    html += `</table>`;
+    ["Total"].forEach((skill) => {
+        allResults.sort(function (x, y) {
+            if (x[skill.toLowerCase()] < y[skill.toLowerCase()]) {
+                return 1;
+            }
+            if (x[skill.toLowerCase()] > y[skill.toLowerCase()]) {
+                return -1;
+            }
+            return 0;
+        });
 
-    allResults.sort(function (x, y) {
-        if (x.ranged < y.ranged) {
-            return 1;
+        html += `<div style="color: red;">每小时：</div>`;
+        html += `<table class="table table-striped table-hover" id="sortTable">
+        <thead>
+        <tr>
+          <th scope="col">地图名</th>
+          <th scope="col">死亡</th>
+          <th scope="col">总经验</th>
+          <th scope="col">Stamina</th>
+          <th scope="col">Intelligence</th>
+          <th scope="col">Attack</th>
+          <th scope="col">Power</th>
+          <th scope="col">Defense</th>
+          <th scope="col">Ranged</th>
+          <th scope="col">Magic</th>
+          <th scope="col">收入卖单</th>
+          <th scope="col">开销买单</th>
+          <th scope="col">净利润</th>
+        </tr>
+        </thead><tbody>`;
+        for (const result of allResults) {
+            html += `<tr><td>${result.zoneName}</td> <td>${
+                result?.deaths?.player
+                    ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
+                    : 0
+            }</td> <td>${result.total}</td> <td>${result.stamina}</td> <td>${result.intelligence}</td> <td>${
+                result.attack
+            } <td>${result.power}</td> <td>${result.defense}</td> <td>${result.ranged}</td> <td>${
+                result.magic
+            }</td><td>${result.revenue}</td><td>${result.expenses}</td><td>${result.profit}</td></tr>`;
         }
-        if (x.ranged > y.ranged) {
-            return -1;
-        }
-        return 0;
+        html += `</tbody></table>`;
     });
-    html += `<div>-------------------------------------</div>`;
-    html += `<div>按Ranged经验排序：</div>`;
-    html += `<table>
-    <tr>
-      <th>地图名</th>
-      <th>每小时总经验</th>
-      <th>每小时死亡次数</th>
-      <th>Magic</th>
-      <th>Ranged</th>
-      <th>Attack</th>
-    </tr>`;
-    for (const result of allResults) {
-        html += `<tr><th>${result.zoneName}</th> <th>${result.totalExp}</th> <th>${
-            result?.deaths?.player
-                ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
-                : 0
-        }</th> <th>${result.magic}</th> <th>${result.ranged}</th> <th>${result.attack}</th></tr>`;
-    }
-    html += `</table>`;
-
-    allResults.sort(function (x, y) {
-        if (x.attack < y.attack) {
-            return 1;
-        }
-        if (x.attack > y.attack) {
-            return -1;
-        }
-        return 0;
-    });
-    html += `<div>-------------------------------------</div>`;
-    html += `<div>按Attack经验排序：</div>`;
-    html += `<table>
-    <tr>
-      <th>地图名</th>
-      <th>每小时总经验</th>
-      <th>每小时死亡次数</th>
-      <th>Magic</th>
-      <th>Ranged</th>
-      <th>Attack</th>
-    </tr>`;
-    for (const result of allResults) {
-        html += `<tr><th>${result.zoneName}</th> <th>${result.totalExp}</th> <th>${
-            result?.deaths?.player
-                ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
-                : 0
-        }</th> <th>${result.magic}</th> <th>${result.ranged}</th> <th>${result.attack}</th></tr>`;
-    }
-    html += `</table>`;
 
     document.querySelector("footer").innerHTML = html;
+
+    new DataTable("#sortTable", { pageLength: 100, order: [[2, "desc"]] });
+}
+
+function numberFormatter(num, digits = 1) {
+    if (num === null || num === undefined) {
+        return null;
+    }
+    if (num < 0) {
+        return "-" + numberFormatter(-num);
+    }
+    const lookup = [
+        { value: 1, symbol: "" },
+        { value: 1e3, symbol: "k" },
+        { value: 1e6, symbol: "M" },
+        { value: 1e9, symbol: "B" },
+    ];
+    const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+    var item = lookup
+        .slice()
+        .reverse()
+        .find(function (item) {
+            return num >= item.value;
+        });
+    return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
 }
 
 // #region Simulation Result
@@ -970,12 +935,6 @@ let allResults = null;
 let numOfZones = null;
 
 function showSimulationResult(simResult) {
-    // bot7420
-    allResults.push(simResult);
-    if (allResults.length === numOfZones) {
-        handleAllResults(allResults);
-    }
-
     let expensesModalTable = document.querySelector("#expensesTable > tbody");
     expensesModalTable.innerHTML = "<tr><th>Item</th><th>Price</th><th>Amount</th><th>Total</th></tr>";
     let revenueModalTable = document.querySelector("#revenueTable > tbody");
@@ -998,6 +957,18 @@ function showSimulationResult(simResult) {
     window.noRngProfit = window.noRngRevenue - window.expenses;
     document.getElementById("noRngProfitSpan").innerText = window.noRngProfit.toLocaleString();
     document.getElementById("noRngProfitPreview").innerText = window.noRngProfit.toLocaleString();
+
+    // bot7420
+    allResults.push(simResult);
+
+    let progress = Math.floor(100 * (allResults.length / numOfZones));
+    progressbar.style.width = progress + "%";
+    progressbar.innerHTML = `${allResults.length} / ${numOfZones}`;
+
+    if (allResults.length === numOfZones) {
+        handleAllResults(allResults);
+        buttonStartSimulation.disabled = false;
+    }
 }
 
 function showKills(simResult) {
@@ -1164,26 +1135,13 @@ function showKills(simResult) {
         let tableRow = '<tr class="' + name.replace(/\s+/g, "") + '"><td>';
         tableRow += name;
         tableRow += '</td><td contenteditable="true">';
-        let price = -1;
+        let price = 0;
         let revenueSetting = document.getElementById("selectPrices_drops").value;
         if (window.prices) {
             let item = window.prices[name];
             if (item) {
-                if (revenueSetting == "bid") {
-                    if (item["bid"] !== -1) {
-                        price = item["bid"];
-                    } else if (item["ask"] !== -1) {
-                        price = item["ask"];
-                    }
-                } else if (revenueSetting == "ask") {
-                    if (item["ask"] !== -1) {
-                        price = item["ask"];
-                    } else if (item["bid"] !== -1) {
-                        price = item["bid"];
-                    }
-                }
-                if (price == -1) {
-                    price = item["vendor"];
+                if (item["bid"] !== -1) {
+                    price = item["bid"];
                 }
             }
         }
@@ -1199,6 +1157,7 @@ function showKills(simResult) {
 
     document.getElementById("revenueSpan").innerText = total.toLocaleString();
     window.revenue = total;
+    simResult.revenue = total;
     document.getElementById("noRngRevenueSpan").innerText = noRngTotal.toLocaleString();
     window.noRngRevenue = noRngTotal;
 
@@ -1276,6 +1235,7 @@ function showConsumablesUsed(simResult) {
 
     if (!simResult.consumablesUsed["player"]) {
         resultDiv.replaceChildren(...newChildren);
+        simResult.expenses = 0;
         return;
     }
 
@@ -1294,29 +1254,17 @@ function showConsumablesUsed(simResult) {
         let tableRow = '<tr class="' + itemDetailMap[consumable].name.replace(/\s+/g, "") + '"><td>';
         tableRow += itemDetailMap[consumable].name;
         tableRow += '</td><td contenteditable="true">';
-        let price = -1;
+        let price = 0;
         let expensesSetting = document.getElementById("selectPrices_consumables").value;
         if (window.prices) {
             let item = window.prices[itemDetailMap[consumable].name];
             if (item) {
-                if (expensesSetting == "bid") {
-                    if (item["bid"] !== -1) {
-                        price = item["bid"];
-                    } else if (item["ask"] !== -1) {
-                        price = item["ask"];
-                    }
-                } else if (expensesSetting == "ask") {
-                    if (item["ask"] !== -1) {
-                        price = item["ask"];
-                    } else if (item["bid"] !== -1) {
-                        price = item["bid"];
-                    }
-                }
-                if (price == -1) {
-                    price = item["vendor"];
+                if (item["ask"] !== -1) {
+                    price = item["ask"];
                 }
             }
         }
+
         tableRow += price;
         tableRow += "</td><td>";
         tableRow += amount;
@@ -1329,7 +1277,7 @@ function showConsumablesUsed(simResult) {
 
     document.getElementById("expensesSpan").innerText = total.toLocaleString();
     window.expenses = total;
-
+    simResult.expenses = total;
     resultDiv.replaceChildren(...newChildren);
 }
 
@@ -1692,6 +1640,7 @@ function initSimulationControls() {
             return;
         }
         buttonStartSimulation.disabled = true;
+        document.querySelector("footer").innerHTML = "";
         startSimulation();
     });
 }
@@ -2233,18 +2182,25 @@ function showErrorModal(error) {
 }
 
 window.prices;
+fetchPrices();
 
 async function fetchPrices() {
+    if (window.prices?.["Coin"]?.["bid"] === 1) {
+        console.log(window.prices);
+        return;
+    }
     try {
         const response = await fetch("https://raw.githubusercontent.com/holychikenz/MWIApi/main/milkyapi.json");
         if (!response.ok) {
-            throw new Error("Error fetching prices");
+            console.error("fetchPrices response not ok");
         }
         const pricesJson = await response.json();
         window.prices = pricesJson["market"];
         window.prices["Coin"]["bid"] = 1;
         window.prices["Coin"]["ask"] = 1;
         window.prices["Coin"]["vendor"] = 1;
+        console.log("fetch done");
+        console.log(window.prices);
     } catch (error) {
         console.error(error);
     }
