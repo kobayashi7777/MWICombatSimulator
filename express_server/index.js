@@ -16,6 +16,11 @@ app.get("/mwisim.github.io", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
+app.get("/readme", (req, res) => {
+    console.log("GET: " + req.originalUrl);
+    res.sendFile(__dirname + "/readme.html");
+});
+
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
 });
