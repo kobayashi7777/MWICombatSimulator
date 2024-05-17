@@ -1143,9 +1143,9 @@ function showKills(simResult) {
 
     document.getElementById("revenueSpan").innerText = total.toLocaleString();
     window.revenue = total;
-    simResult.revenue = total;
     document.getElementById("noRngRevenueSpan").innerText = noRngTotal.toLocaleString();
     window.noRngRevenue = noRngTotal;
+    simResult.revenue = Math.round(noRngTotal);
 
     let resultAccordion = document.getElementById("noRngDropsAccordion");
     showElement(resultAccordion);
@@ -1263,7 +1263,7 @@ function showConsumablesUsed(simResult) {
 
     document.getElementById("expensesSpan").innerText = total.toLocaleString();
     window.expenses = total;
-    simResult.expenses = total;
+    simResult.expenses = Math.round(total);
     resultDiv.replaceChildren(...newChildren);
 }
 
@@ -2298,12 +2298,20 @@ const body = document.body;
 
 if (localStorage.getItem("darkModeEnabled") === "true") {
     body.classList.add("dark-mode");
+    document.querySelector("html").setAttribute("data-bs-theme", "dark");
     darkModeToggle.checked = true;
+} else {
+    document.querySelector("html").setAttribute("data-bs-theme", "light");
 }
 
 darkModeToggle.addEventListener("change", () => {
     body.classList.toggle("dark-mode");
     localStorage.setItem("darkModeEnabled", darkModeToggle.checked);
+    if (darkModeToggle.checked) {
+        document.querySelector("html").setAttribute("data-bs-theme", "dark");
+    } else {
+        document.querySelector("html").setAttribute("data-bs-theme", "light");
+    }
 });
 
 initEquipmentSection();
