@@ -825,22 +825,26 @@ function handleAllResults(allResults) {
         }
         result.total = Math.round(totalExp / (result.simulatedTime / 3600000000000));
         result.stamina = Math.round(
-            result?.experienceGained?.player.stamina ?? 0 / (result.simulatedTime / 3600000000000)
+            (result?.experienceGained?.player.stamina ?? 0) / (result.simulatedTime / 3600000000000)
         );
         result.intelligence = Math.round(
-            result?.experienceGained?.player.intelligence ?? 0 / (result.simulatedTime / 3600000000000)
+            (result?.experienceGained?.player.intelligence ?? 0) / (result.simulatedTime / 3600000000000)
         );
         result.attack = Math.round(
-            result?.experienceGained?.player.attack ?? 0 / (result.simulatedTime / 3600000000000)
+            (result?.experienceGained?.player.attack ?? 0) / (result.simulatedTime / 3600000000000)
         );
-        result.power = Math.round(result?.experienceGained?.player.power ?? 0 / (result.simulatedTime / 3600000000000));
+        result.power = Math.round(
+            (result?.experienceGained?.player.power ?? 0) / (result.simulatedTime / 3600000000000)
+        );
         result.defense = Math.round(
-            result?.experienceGained?.player.defense ?? 0 / (result.simulatedTime / 3600000000000)
+            (result?.experienceGained?.player.defense ?? 0) / (result.simulatedTime / 3600000000000)
         );
         result.ranged = Math.round(
-            result?.experienceGained?.player.ranged ?? 0 / (result.simulatedTime / 3600000000000)
+            (result?.experienceGained?.player.ranged ?? 0) / (result.simulatedTime / 3600000000000)
         );
-        result.magic = Math.round(result?.experienceGained?.player.magic ?? 0 / (result.simulatedTime / 3600000000000));
+        result.magic = Math.round(
+            (result?.experienceGained?.player.magic ?? 0) / (result.simulatedTime / 3600000000000)
+        );
 
         result.zoneName = result.zoneHrid
             .replaceAll("/actions/combat/", "")
@@ -882,7 +886,8 @@ function handleAllResults(allResults) {
           <th scope="col">Magic</th>
           <th scope="col">收入买单</th>
           <th scope="col">开销卖单</th>
-          <th scope="col">净利润</th>
+          <th scope="col">净利润(天)</th>
+          <th scope="col">净利润(小时)</th>
         </tr>
         </thead><tbody>`;
         for (const result of allResults) {
@@ -894,14 +899,49 @@ function handleAllResults(allResults) {
                 result.attack
             } <td>${result.power}</td> <td>${result.defense}</td> <td>${result.ranged}</td> <td>${
                 result.magic
-            }</td><td>${result.revenue}</td><td>${result.expenses}</td><td>${result.profit}</td></tr>`;
+            }</td><td>${result.revenue}</td><td>${result.expenses}</td><td>${result.profit}</td><td>${Math.round(
+                result.profit / 24
+            )}</td></tr>`;
         }
         html += `</tbody></table>`;
     });
 
     document.querySelector("footer").innerHTML = html;
 
-    new DataTable("#sortTable", { pageLength: 100, order: [[2, "desc"]] });
+    new DataTable("#sortTable", {
+        pageLength: 100,
+        order: [[2, "desc"]],
+        initComplete: function () {
+            var api = this.api();
+            api.columns(":not(:first)").every(function () {
+                if (this.index() !== 1 && this.index() !== 10 && this.index() !== 11 && this.index() !== 13) {
+                    var col = this.index();
+                    var data = this.data()
+                        .unique()
+                        .map(function (value) {
+                            return Number(value);
+                        })
+                        .toArray()
+                        .sort(function (a, b) {
+                            return b - a;
+                        });
+                    api.cells(null, col).every(function () {
+                        var cell = Number(this.data());
+                        if (cell === data[0] && cell !== 0) {
+                            $(this.node()).css("background-color", "#32de84");
+                        }
+                    });
+                }
+
+                if (this.index() !== 1) {
+                    var col = this.index();
+                    api.cells(null, col).every(function () {
+                        //this.data(numberFormatter(this.data()));
+                    });
+                }
+            });
+        },
+    });
 }
 
 function numberFormatter(num, digits = 1) {
