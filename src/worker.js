@@ -21,6 +21,7 @@ onmessage = async function (event) {
                 simResult.zoneHrid = event.data.zoneHrid;
                 this.postMessage({ type: "simulation_result", simResult: simResult });
             } catch (e) {
+                console.log(e);
                 this.postMessage({ type: "simulation_error", error: e });
             }
             break;

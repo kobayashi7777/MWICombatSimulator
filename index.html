@@ -28,6 +28,12 @@
                 /* Add other relevant styles for form controls in dark mode */
             }
 
+            body.dark-mode #expensesTable,
+            body.dark-mode #revenueTable,
+            body.dark-mode #noRngRevenueTable {
+                color: #f0f0f0;
+            }
+
             table,
             th,
             td {
@@ -863,6 +869,170 @@
                             </div>
                             <!-- #endregion -->
                         </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_neck" class="col-md-2 col-form-label">Neck</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_neck" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_neck" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_earrings" class="col-md-2 col-form-label">Earrings</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_earrings" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_earrings" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_body" class="col-md-2 col-form-label">Body</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_body" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_body" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_legs" class="col-md-2 col-form-label">Legs</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_legs" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_legs" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_feet" class="col-md-2 col-form-label">Feet</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_feet" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_feet" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_hands" class="col-md-2 col-form-label">Hands</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_hands" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_hands" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_ring" class="col-md-2 col-form-label">Ring</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_ring" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_ring" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_weapon" class="col-md-2 col-form-label">Weapon</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_weapon" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_weapon" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_off_hand" class="col-md-2 col-form-label">Offhand</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_off_hand" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_off_hand" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_pouch" class="col-md-2 col-form-label">Pouch</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_pouch" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_pouch" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_back" class="col-md-2 col-form-label">Back</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_back" class="form-select">
+                                    <option value="">Empty</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" id="inputEquipmentEnhancementLevel_back" class="form-control"
+                                    value="0" min="0" max="20" required />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="selectEquipment_set" class="col-md-2 col-form-label">Presets</label>
+                            <div class="col-md-6">
+                                <select id="selectEquipment_set" class="form-select">
+                                    <option value="">None</option>
+                                    <optgroup label="MELEE">
+                                        <option value="Cheese">Cheese</option>
+                                        <option value="Verdant">Verdant</option>
+                                        <option value="Azure">Azure</option>
+                                        <option value="Burble">Burble</option>
+                                        <option value="Crimson">Crimson</option>
+                                        <option value="Rainbow">Rainbow</option>
+                                        <option value="Holy">Holy</option>
+                                    </optgroup>
+                                    <optgroup label="MAGIC">
+                                        <option value="Cotton">Cotton</option>
+                                        <option value="Linen">Linen</option>
+                                        <option value="Bamboo">Bamboo</option>
+                                        <option value="Silk">Silk</option>
+                                        <option value="Radiant">Radiant</option>
+                                    </optgroup>
+                                    <optgroup label="RANGED">
+                                        <option value="Rough">Rough</option>
+                                        <option value="Reptile">Reptile</option>
+                                        <option value="Gobo">Gobo</option>
+                                        <option value="Beast">Beast</option>
+                                        <option value="Umbral">Umbral</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- #endregion -->
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -874,9 +1044,262 @@
                         <div class="col-md-8">Max HP:</div>
                         <div class="col-md-4" id="combatStat_maxHitpoints"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-8">Max MP:</div>
-                        <div class="col-md-4" id="combatStat_maxManapoints"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <!-- #region Combat stats -->
+                <div class="row mb-3">
+                    <b>Combat Stats</b>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Max HP:</div>
+                    <div class="col-md-4" id="combatStat_maxHitpoints"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Max MP:</div>
+                    <div class="col-md-4" id="combatStat_maxManapoints"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Combat Style:</div>
+                    <div class="col-md-4" id="combatStat_combatStyleHrid"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Damage Type:</div>
+                    <div class="col-md-4" id="combatStat_damageType"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Attack Interval:</div>
+                    <div class="col-md-4" id="combatStat_attackInterval"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Stab Accuracy:</div>
+                    <div class="col-md-4" id="combatStat_stabAccuracyRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Stab Damage:</div>
+                    <div class="col-md-4" id="combatStat_stabMaxDamage"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Slash Accuracy:</div>
+                    <div class="col-md-4" id="combatStat_slashAccuracyRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Slash Damage:</div>
+                    <div class="col-md-4" id="combatStat_slashMaxDamage"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Smash Accuracy:</div>
+                    <div class="col-md-4" id="combatStat_smashAccuracyRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Smash Damage:</div>
+                    <div class="col-md-4" id="combatStat_smashMaxDamage"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Ranged Accuracy:</div>
+                    <div class="col-md-4" id="combatStat_rangedAccuracyRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Magic Accuracy:</div>
+                    <div class="col-md-4" id="combatStat_magicAccuracyRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Ranged Damage:</div>
+                    <div class="col-md-4" id="combatStat_rangedMaxDamage"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Magic Damage:</div>
+                    <div class="col-md-4" id="combatStat_magicMaxDamage"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Physical Amplify:</div>
+                    <div class="col-md-4" id="combatStat_physicalAmplify"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Water Amplify:</div>
+                    <div class="col-md-4" id="combatStat_waterAmplify"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Nature Amplify:</div>
+                    <div class="col-md-4" id="combatStat_natureAmplify"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Fire Amplify:</div>
+                    <div class="col-md-4" id="combatStat_fireAmplify"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Healing Amplify:</div>
+                    <div class="col-md-4" id="combatStat_healingAmplify"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Stab Evasion:</div>
+                    <div class="col-md-4" id="combatStat_stabEvasionRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Slash Evasion:</div>
+                    <div class="col-md-4" id="combatStat_slashEvasionRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Smash Evasion:</div>
+                    <div class="col-md-4" id="combatStat_smashEvasionRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Ranged Evasion:</div>
+                    <div class="col-md-4" id="combatStat_rangedEvasionRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Magic Evasion:</div>
+                    <div class="col-md-4" id="combatStat_magicEvasionRating"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Armor:</div>
+                    <div class="col-md-4" id="combatStat_totalArmor"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Water Resistance:</div>
+                    <div class="col-md-4" id="combatStat_totalWaterResistance"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Nature Resistance:</div>
+                    <div class="col-md-4" id="combatStat_totalNatureResistance"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Fire Resistance:</div>
+                    <div class="col-md-4" id="combatStat_totalFireResistance"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Life Steal:</div>
+                    <div class="col-md-4" id="combatStat_lifeSteal"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Reflect Power:</div>
+                    <div class="col-md-4" id="combatStat_physicalReflectPower"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">HP Regen:</div>
+                    <div class="col-md-4" id="combatStat_HPRegen"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">MP Regen:</div>
+                    <div class="col-md-4" id="combatStat_MPRegen"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Experience Rate:</div>
+                    <div class="col-md-4" id="combatStat_combatExperience"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Critical Rate:</div>
+                    <div class="col-md-4" id="combatStat_criticalRate"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Critical Damage Bonus:</div>
+                    <div class="col-md-4" id="combatStat_criticalDamage"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Task Damage Bonus:</div>
+                    <div class="col-md-4" id="combatStat_taskDamage"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Armor Penetration:</div>
+                    <div class="col-md-4" id="combatStat_armorPenetration"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Water Penetration:</div>
+                    <div class="col-md-4" id="combatStat_waterPenetration"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Nature Penetration:</div>
+                    <div class="col-md-4" id="combatStat_naturePenetration"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Fire Penetration:</div>
+                    <div class="col-md-4" id="combatStat_firePenetration"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Ability Haste:</div>
+                    <div class="col-md-4" id="combatStat_abilityHaste"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Tenacity:</div>
+                    <div class="col-md-4" id="combatStat_tenacity"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Mana Leech:</div>
+                    <div class="col-md-4" id="combatStat_manaLeech"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Cast Speed:</div>
+                    <div class="col-md-4" id="combatStat_castSpeed"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Threat:</div>
+                    <div class="col-md-4" id="combatStat_totalThreat"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Parry:</div>
+                    <div class="col-md-4" id="combatStat_parry"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Mayhem:</div>
+                    <div class="col-md-4" id="combatStat_mayhem"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Pierce:</div>
+                    <div class="col-md-4" id="combatStat_pierce"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Curse:</div>
+                    <div class="col-md-4" id="combatStat_curse"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">Attack Speed:</div>
+                    <div class="col-md-4" id="combatStat_attackSpeed"></div>
+                </div>
+                <!-- #endregion -->
+            </div>
+            <div class="col-md-5">
+                <div class="row mb-3">
+                    <b>Simulation Results</b>
+                </div>
+                <div class="row">
+                    <!-- #region Simulation Results -->
+                    <div class="col-md-5">
+                        <div class="row">
+                            <b>Kills per hour</b>
+                        </div>
+                        <div id="simulationResultKills" class="mb-2"></div>
+                        <div class="row" id="simulationBossTimeHeading">
+                            <b>Time spent on boss</b>
+                        </div>
+                        <div id="simulationBossTime" class="mb-2"></div>
+                        <div class="row">
+                            <b>Deaths per hour</b>
+                        </div>
+                        <div id="simulationResultPlayerDeaths" class="mb-2"></div>
+                        <div class="row">
+                            <b>XP per hour</b>
+                        </div>
+                        <div id="simulationResultExperienceGain" class="mb-2"></div>
+                        <div class="row" id="simulationHpSpentHeading">
+                            <b>HP Spent per hour</b>
+                        </div>
+                        <div id="simulationHpSpent" class="mb-2"></div>
+                        <div class="row">
+                            <b>Consumables used per hour</b>
+                        </div>
+                        <div id="simulationResultConsumablesUsed" class="mb-2"></div>
+                        <div class="row">
+                            <b>Mana used per hour (Casts/h)</b>
+                        </div>
+                        <div id="simulationResultManaUsed" class="mb-2"></div>
+                        <div class="row">
+                            <b>Health restored per second</b>
+                        </div>
+                        <div id="simulationResultHealthRestored" class="mb-2"></div>
+                        <div class="row">
+                            <b>Mana restored per second</b>
+                        </div>
+                        <div id="simulationResultManaRestored"></div>
                     </div>
                     <div class="row">
                         <div class="col-md-8">Combat Style:</div>
@@ -1787,19 +2210,312 @@
             </div>
             <!-- endregion -->
         </div>
-        <div class="modal" id="patchNotesModal" tabindex="-1">
-            <!-- #region Patch Notes Modal -->
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Patch Notes</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-12 mb-4">
-                                    <h6>May 6th, 2024</h6>
+        <!-- endregion -->
+    </div>
+    <div class="modal" id="patchNotesModal" tabindex="-1">
+        <!-- #region Patch Notes Modal -->
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Patch Notes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <h6>June 7th, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                    <li>Fixed base threat display</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>June 3rd, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                    <li>Fixed some dark mode CSS</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>June 3rd, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                    <li>Added Attack Speed</li>
+                                    <li>Removed Promote Special Ability since players can't get it</li>
+                                    <li>Enemy ability cooldowns randomly started somewhere between having No CD(Instant
+                                        Cast) and being on Max CD. They now start somewhere between Half of Max CD and
+                                        Max CD. They always wait at least half of the CD to cast now. This means
+                                        enemy ability damage is now lower.</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>May 31st, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>May 31st, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                    <li>Added Back slot</li>
+                                    <li>Added new skills and their effects</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>May 2nd, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>May 1st, 2024</h6>
+                                <ul>
+                                    <li>Fixed 2h bug</li>
+                                    <li>Fixed bug with enemy dying to DoT and having nothing to attack</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>May 1st, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                    <li>Added new auto attack multiplier</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Apr 30th, 2024</h6>
+                                <ul>
+                                    <li>Added the 3 remaining weapon special effects</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Apr 30th, 2024</h6>
+                                <ul>
+                                    <li>Fixed time spent on boss</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Apr 27th, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                    <li>Added Dookie Bow and Dung Crossbow for this patch only</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Apr 26th, 2024</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                    <li>Changed spawns and loot to match the game's new Elite Tier system</li>
+                                    <li>Added Pierce</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Apr 9th, 2024</h6>
+                                <ul>
+                                    <li>Fixed a bug with Quick Aid</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Apr 8th, 2024</h6>
+                                <ul>
+                                    <li>Fixed a bug with Revive</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Apr 8th, 2024</h6>
+                                <ul>
+                                    <li>Added Revive Functionality</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Mar 13th, 2024</h6>
+                                <ul>
+                                    <li>Updated Game Data</li>
+                                    <li>Added HP Spending for Abilities</li>
+                                    <li>Added HP Spending Tracker for Player</li>
+                                    <li>Added Elite Zone Bonuses</li>
+                                    <li>Drop Rates now correctly cap at 100% for no RNG profit</li>
+                                    <li>Doubled Healing Magic XP</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Mar 4th, 2024</h6>
+                                <ul>
+                                    <li>Updated Game Data</li>
+                                    <li>Added Special Ability Slot</li>
+                                    <li>Added Threat Calculations</li>
+                                    <li>Added Elite Only Abilities</li>
+                                    <li>Added Elite Only Drops</li>
+                                    <li>Added New Triggers</li>
+                                    <li>Added Support for Most New Abilities/Auras</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Jan 24th, 2024</h6>
+                                <ul>
+                                    <li>Fixed a normal monster stat bug</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Jan 24th, 2024</h6>
+                                <ul>
+                                    <li>Added Elite Monsters</li>
+                                    <li>Updated Game Data</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Nov 13th, 2023</h6>
+                                <ul>
+                                    <li>Fixed Lucky Coffee Bug</li>
+                                    <li>Added casts/h</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>Nov 10th, 2023</h6>
+                                <ul>
+                                    <li>% Penetration no longer affects negative resistance</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>October 27th, 2023</h6>
+                                <ul>
+                                    <li>Fixed a bug with house buffs and consumables</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>October 26th, 2023</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>October 24th, 2023</h6>
+                                <ul>
+                                    <li>Added house rooms</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>October 21st, 2023</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>October 19th, 2023</h6>
+                                <ul>
+                                    <li>Fixed monster attack speed (It's higher now)</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>October 19th, 2023</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                    <li>Added attack speed from attack levels (0.05% per level)</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>October 2nd, 2023</h6>
+                                <ul>
+                                    <li>Changed magic evasion formula to (0.75*Defense + 0.25*Ranged) from
+                                        (Defence+Ranged)/2</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>September 29th, 2023</h6>
+                                <ul>
+                                    <li>You can now pick between BO/SO for your default prices</li>
+                                    <li>Added a no RNG drops feature</li>
+                                    <li>Fixed a bug that prevented some from copying the export to their clipboard.</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>September 10th, 2023</h6>
+                                <ul>
+                                    <li>Updated penetration formula</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 30th, 2023</h6>
+                                <ul>
+                                    <li>Fixed a bug giving monsters double regen</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 28th, 2023</h6>
+                                <ul>
+                                    <li>Updated a wrong armor value</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 28th, 2023</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 17th, 2023</h6>
+                                <ul>
+                                    <li>Fixed a bug with blind</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 17th, 2023</h6>
+                                <ul>
+                                    <li>Fixed MooLite import bug</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 16th, 2023</h6>
+                                <ul>
+                                    <li>Monster DPS now uses monster alive time instead of total sim time now.</li>
+                                    <li>Sim now shows how long you spend fighting the boss</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 16th, 2023</h6>
+                                <ul>
+                                    <li>Fixed ability haste</li>
+                                    <li>Fixed tenacity display issue</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 14th, 2023</h6>
+                                <ul>
+                                    <li>Added importing triggers</li>
+                                    <li>Fixed mana leech crossbow bug</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 9th, 2023</h6>
+                                <ul>
+                                    <li>Updated Damage Done EXP formula to give 35% of mitigated damage done as EXP
+                                        instead of 30%</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 8th, 2023</h6>
+                                <ul>
+                                    <li>Crowd control now correctly removed on death</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 8th, 2023</h6>
+                                <ul>
+                                    <li>Updated game data</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 7th, 2023</h6>
+                                <ul>
+                                    <li>Fixed magic evasion</li>
+                                    <li>Fixed a bug with sim getting stuck when blind and OOM</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <h6>August 3rd, 2023</h6>
+                                <ul>
+                                    <li>Updated so it works with the current test server game data</li>
                                     <ul>
                                         <li>Updated game data</li>
                                     </ul>
