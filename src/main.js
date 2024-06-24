@@ -1725,7 +1725,7 @@ function startSimulation() {
         .sort((a, b) => a.sortIndex - b.sortIndex);
     let planetZones = [];
     for (const zone of Object.values(zones)) {
-        if (zone.combatZoneInfo) {
+        if (zone.combatZoneInfo?.fightInfo?.bossSpawns) {
             planetZones.push(zone);
         }
     }
