@@ -58,7 +58,21 @@ worker.onmessage = function (event) {
 // #region Equipment
 
 function initEquipmentSection() {
-    ["head", "body", "legs", "feet", "hands", "main_hand", "two_hand", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
+    [
+        "head",
+        "body",
+        "legs",
+        "feet",
+        "hands",
+        "main_hand",
+        "two_hand",
+        "off_hand",
+        "pouch",
+        "neck",
+        "earrings",
+        "ring",
+        "back",
+    ].forEach((type) => {
         initEquipmentSelect(type);
         initEnhancementLevelInput(type);
     });
@@ -180,7 +194,21 @@ function enhancementLevelInputHandler() {
 }
 
 function updateEquipmentState() {
-    ["head", "body", "legs", "feet", "hands", "main_hand", "two_hand", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
+    [
+        "head",
+        "body",
+        "legs",
+        "feet",
+        "hands",
+        "main_hand",
+        "two_hand",
+        "off_hand",
+        "pouch",
+        "neck",
+        "earrings",
+        "ring",
+        "back",
+    ].forEach((type) => {
         let equipmentType = "/equipment_types/" + type;
         let selectType = type;
         if (type == "main_hand" || type == "two_hand") {
@@ -338,7 +366,7 @@ function updateCombatStatsUI() {
         "mayhem",
         "pierce",
         "curse",
-        "attackSpeed"
+        "attackSpeed",
     ].forEach((stat) => {
         let element = document.getElementById("combatStat_" + stat);
         let value = (100 * player.combatDetails.combatStats[stat]).toLocaleString([], {
@@ -479,7 +507,9 @@ function initAbilitiesSection() {
 
         let gameAbilities;
         if (i == 0) {
-            gameAbilities = Object.values(abilityDetailMap).filter(x => x.isSpecialAbility && x.name !== "Promote").sort((a, b) => a.sortIndex - b.sortIndex);
+            gameAbilities = Object.values(abilityDetailMap)
+                .filter((x) => x.isSpecialAbility && x.name !== "Promote")
+                .sort((a, b) => a.sortIndex - b.sortIndex);
         } else {
             gameAbilities = Object.values(abilityDetailMap)
                 .filter((x) => !x.isSpecialAbility)
@@ -784,7 +814,9 @@ function initZones() {
 
     // TOOD dungeon wave spawns
     let gameZones = Object.values(actionDetailMap)
-        .filter((action) => action.type == "/action_types/combat" && action.category != "/action_categories/combat/dungeons")
+        .filter(
+            (action) => action.type == "/action_types/combat" && action.category != "/action_categories/combat/dungeons"
+        )
         .sort((a, b) => a.sortIndex - b.sortIndex);
 
     for (const zone of Object.values(gameZones)) {
@@ -952,6 +984,7 @@ let allResults = null;
 let numOfZones = null;
 
 function showSimulationResult(simResult) {
+    console.log(simResult);
     let expensesModalTable = document.querySelector("#expensesTable > tbody");
     expensesModalTable.innerHTML = "<tr><th>Item</th><th>Price</th><th>Amount</th><th>Total</th></tr>";
     let revenueModalTable = document.querySelector("#revenueTable > tbody");
@@ -1434,64 +1467,66 @@ function showDamageDone(simResult) {
     let bossTimeDiv = document.getElementById("simulationBossTime");
     bossTimeDiv.classList.add("d-none");
 
-    for (const [target, abilities] of Object.entries(simResult.attacks["player"])) {
-        let targetDamageDone = {};
+    if (simResult.attacks["player"]) {
+        for (const [target, abilities] of Object.entries(simResult.attacks["player"])) {
+            let targetDamageDone = {};
 
-        const i = simResult.timeSpentAlive.findIndex((e) => e.name === target);
-        let aliveSecondsSimulated = simResult.timeSpentAlive[i].timeSpentAlive / ONE_SECOND;
+            const i = simResult.timeSpentAlive.findIndex((e) => e.name === target);
+            let aliveSecondsSimulated = simResult.timeSpentAlive[i].timeSpentAlive / ONE_SECOND;
 
-        for (const [ability, abilityCasts] of Object.entries(abilities)) {
-            let casts = Object.values(abilityCasts).reduce((prev, cur) => prev + cur, 0);
-            let misses = abilityCasts["miss"] ?? 0;
-            let damage = Object.entries(abilityCasts)
-                .filter((entry) => entry[0] != "miss")
-                .reduce((prev, cur) => prev + Number(cur[0]) * cur[1], 0);
+            for (const [ability, abilityCasts] of Object.entries(abilities)) {
+                let casts = Object.values(abilityCasts).reduce((prev, cur) => prev + cur, 0);
+                let misses = abilityCasts["miss"] ?? 0;
+                let damage = Object.entries(abilityCasts)
+                    .filter((entry) => entry[0] != "miss")
+                    .reduce((prev, cur) => prev + Number(cur[0]) * cur[1], 0);
 
-            targetDamageDone[ability] = {
-                casts,
-                misses,
-                damage,
-            };
-            if (totalDamageDone[ability]) {
-                totalDamageDone[ability].casts += casts;
-                totalDamageDone[ability].misses += misses;
-                totalDamageDone[ability].damage += damage;
-            } else {
-                totalDamageDone[ability] = {
+                targetDamageDone[ability] = {
                     casts,
                     misses,
                     damage,
                 };
+                if (totalDamageDone[ability]) {
+                    totalDamageDone[ability].casts += casts;
+                    totalDamageDone[ability].misses += misses;
+                    totalDamageDone[ability].damage += damage;
+                } else {
+                    totalDamageDone[ability] = {
+                        casts,
+                        misses,
+                        damage,
+                    };
+                }
             }
-        }
 
-        let resultDiv = document.getElementById("simulationResultDamageDoneEnemy" + enemyIndex);
-        createDamageTable(resultDiv, targetDamageDone, aliveSecondsSimulated);
+            let resultDiv = document.getElementById("simulationResultDamageDoneEnemy" + enemyIndex);
+            createDamageTable(resultDiv, targetDamageDone, aliveSecondsSimulated);
 
-        let resultAccordion = document.getElementById("simulationResultDamageDoneAccordionEnemy" + enemyIndex);
-        showElement(resultAccordion);
+            let resultAccordion = document.getElementById("simulationResultDamageDoneAccordionEnemy" + enemyIndex);
+            showElement(resultAccordion);
 
-        let resultAccordionButton = document.getElementById(
-            "buttonSimulationResultDamageDoneAccordionEnemy" + enemyIndex
-        );
-        let targetName = combatMonsterDetailMap[target].name;
-        resultAccordionButton.innerHTML = "<b>Damage Done (" + targetName + ")</b>";
-
-        if (simResult.bossSpawns.includes(target)) {
-            let hoursSpentOnBoss = (aliveSecondsSimulated / 60 / 60).toFixed(2);
-            let percentSpentOnBoss = ((aliveSecondsSimulated / totalSecondsSimulated) * 100).toFixed(2);
-
-            let bossRow = createRow(
-                ["col-md-6", "col-md-6 text-end"],
-                [targetName, hoursSpentOnBoss + "h(" + percentSpentOnBoss + "%)"]
+            let resultAccordionButton = document.getElementById(
+                "buttonSimulationResultDamageDoneAccordionEnemy" + enemyIndex
             );
-            bossTimeDiv.replaceChildren(bossRow);
+            let targetName = combatMonsterDetailMap[target].name;
+            resultAccordionButton.innerHTML = "<b>Damage Done (" + targetName + ")</b>";
 
-            bossTimeHeadingDiv.classList.remove("d-none");
-            bossTimeDiv.classList.remove("d-none");
+            if (simResult.bossSpawns.includes(target)) {
+                let hoursSpentOnBoss = (aliveSecondsSimulated / 60 / 60).toFixed(2);
+                let percentSpentOnBoss = ((aliveSecondsSimulated / totalSecondsSimulated) * 100).toFixed(2);
+
+                let bossRow = createRow(
+                    ["col-md-6", "col-md-6 text-end"],
+                    [targetName, hoursSpentOnBoss + "h(" + percentSpentOnBoss + "%)"]
+                );
+                bossTimeDiv.replaceChildren(bossRow);
+
+                bossTimeHeadingDiv.classList.remove("d-none");
+                bossTimeDiv.classList.remove("d-none");
+            }
+
+            enemyIndex++;
         }
-
-        enemyIndex++;
     }
 
     let totalResultDiv = document.getElementById("simulationResultTotalDamageDone");
@@ -1685,21 +1720,14 @@ function startSimulation() {
     // bot7420 All zones
     const plannetToggle = document.getElementById("plannetToggle");
     let zones = Object.values(actionDetailMap)
-        .filter((action) => action.type == "/action_types/combat")
+        .filter((action) => action.type === "/action_types/combat")
+        .filter((action) => !action.combatZoneInfo?.isDungeon)
         .sort((a, b) => a.sortIndex - b.sortIndex);
     let planetZones = [];
     for (const zone of Object.values(zones)) {
-        if (
-            !zone.hrid.includes("planet") &&
-            !zone.hrid.includes("tower") &&
-            !zone.hrid.includes("with") &&
-            !zone.hrid.includes("cave") &&
-            !zone.hrid.includes("zone") &&
-            !zone.hrid.includes("_abyss")
-        ) {
-            continue;
+        if (zone.combatZoneInfo) {
+            planetZones.push(zone);
         }
-        planetZones.push(zone);
     }
 
     allResults = [];
@@ -1713,6 +1741,7 @@ function startSimulation() {
                 zoneHrid: zone.hrid,
                 simulationTimeLimit: simulationTimeLimit,
             };
+            console.log(workerMessage);
             worker.postMessage(workerMessage);
         }
     } else {
@@ -1724,6 +1753,7 @@ function startSimulation() {
                 zoneHrid: zone.hrid,
                 simulationTimeLimit: simulationTimeLimit,
             };
+            console.log(workerMessage);
             worker.postMessage(workerMessage);
         }
     }
@@ -1868,16 +1898,28 @@ function getEquipmentSetFromUI() {
         equipmentSet.levels[skill] = Number(levelInput.value);
     });
 
-    ["head", "body", "legs", "feet", "hands", "weapon", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
+    [
+        "head",
+        "body",
+        "legs",
+        "feet",
+        "hands",
+        "weapon",
+        "off_hand",
+        "pouch",
+        "neck",
+        "earrings",
+        "ring",
+        "back",
+    ].forEach((type) => {
         let equipmentSelect = document.getElementById("selectEquipment_" + type);
         let enhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_" + type);
 
-            equipmentSet.equipment[type] = {
-                equipment: equipmentSelect.value,
-                enhancementLevel: Number(enhancementLevelInput.value),
-            };
-        }
-    );
+        equipmentSet.equipment[type] = {
+            equipment: equipmentSelect.value,
+            enhancementLevel: Number(enhancementLevelInput.value),
+        };
+    });
 
     for (let i = 0; i < 3; i++) {
         let foodSelect = document.getElementById("selectFood_" + i);
@@ -1911,7 +1953,20 @@ function loadEquipmentSetIntoUI(equipmentSet) {
         levelInput.value = equipmentSet.levels[skill] ?? 1;
     });
 
-    ["head", "body", "legs", "feet", "hands", "weapon", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
+    [
+        "head",
+        "body",
+        "legs",
+        "feet",
+        "hands",
+        "weapon",
+        "off_hand",
+        "pouch",
+        "neck",
+        "earrings",
+        "ring",
+        "back",
+    ].forEach((type) => {
         let equipmentSelect = document.getElementById("selectEquipment_" + type);
         let enhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_" + type);
 
@@ -2060,20 +2115,22 @@ function initImportExportModal() {
             levelInput.value = importSet.player[skill + "Level"];
         });
 
-        ["head", "body", "legs", "feet", "hands", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
-            let equipmentSelect = document.getElementById("selectEquipment_" + type);
-            let enhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_" + type);
-            let currentEquipment = importSet.player.equipment.find(
-                (item) => item.itemLocationHrid === "/item_locations/" + type
-            );
-            if (currentEquipment !== undefined) {
-                equipmentSelect.value = currentEquipment.itemHrid;
-                enhancementLevelInput.value = currentEquipment.enhancementLevel;
-            } else {
-                equipmentSelect.value = "";
-                enhancementLevelInput.value = 0;
+        ["head", "body", "legs", "feet", "hands", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach(
+            (type) => {
+                let equipmentSelect = document.getElementById("selectEquipment_" + type);
+                let enhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_" + type);
+                let currentEquipment = importSet.player.equipment.find(
+                    (item) => item.itemLocationHrid === "/item_locations/" + type
+                );
+                if (currentEquipment !== undefined) {
+                    equipmentSelect.value = currentEquipment.itemHrid;
+                    enhancementLevelInput.value = currentEquipment.enhancementLevel;
+                } else {
+                    equipmentSelect.value = "";
+                    enhancementLevelInput.value = 0;
+                }
             }
-        });
+        );
 
         let weaponSelect = document.getElementById("selectEquipment_weapon");
         let weaponEnhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_weapon");
