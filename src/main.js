@@ -884,9 +884,9 @@ function handleAllResults(allResults) {
         html += `<table class="table table-striped table-hover" id="sortTable">
         <thead>
         <tr>
-          <th scope="col">地图名</th>
-          <th scope="col">死亡(小时)</th>
-          <th scope="col">总经验(小时)</th>
+          <th scope="col">Zone</th>
+          <th scope="col">Death/hr</th>
+          <th scope="col">Total exp/hr</th>
           <th scope="col">Stamina</th>
           <th scope="col">Intelligence</th>
           <th scope="col">Attack</th>
@@ -894,10 +894,10 @@ function handleAllResults(allResults) {
           <th scope="col">Defense</th>
           <th scope="col">Ranged</th>
           <th scope="col">Magic</th>
-          <th scope="col">收入买单</th>
-          <th scope="col">开销卖单</th>
-          <th scope="col">净利润(天)</th>
-          <th scope="col">净利润(小时)</th>
+          <th scope="col">Revenue(BO)</th>
+          <th scope="col">Expense(SO)</th>
+          <th scope="col">Profit/day</th>
+          <th scope="col">Profit/hr</th>
         </tr>
         </thead><tbody>`;
         for (const result of allResults) {
