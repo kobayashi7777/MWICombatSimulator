@@ -1716,6 +1716,8 @@ function startSimulation() {
 
     let simulationTimeInput = document.getElementById("inputSimulationTime");
     let simulationTimeLimit = Number(simulationTimeInput.value) * ONE_HOUR;
+    let simulationBattlesPerActionInput = document.getElementById("inputSimulationBattlesPerAction");
+    let simulationBattlesPerAction = Number(simulationBattlesPerActionInput.value) || 0;
 
     // bot7420 All zones
     const plannetToggle = document.getElementById("plannetToggle");
@@ -1740,6 +1742,7 @@ function startSimulation() {
                 player: player,
                 zoneHrid: zone.hrid,
                 simulationTimeLimit: simulationTimeLimit,
+                simulationBattlesPerAction: simulationBattlesPerAction,
             };
             console.log(workerMessage);
             worker.postMessage(workerMessage);
@@ -1752,6 +1755,7 @@ function startSimulation() {
                 player: player,
                 zoneHrid: zone.hrid,
                 simulationTimeLimit: simulationTimeLimit,
+                simulationBattlesPerAction: simulationBattlesPerAction,
             };
             console.log(workerMessage);
             worker.postMessage(workerMessage);
@@ -2050,6 +2054,7 @@ function initImportExportModal() {
     exportSetButton.addEventListener("click", (event) => {
         let zoneSelect = document.getElementById("selectZone");
         let simulationTimeInput = document.getElementById("inputSimulationTime");
+        let simulationBattlesPerActionInput = document.getElementById("inputSimulationBattlesPerAction");
         let equipmentArray = [];
         for (const item in player.equipment) {
             if (player.equipment[item] != null) {
@@ -2095,6 +2100,7 @@ function initImportExportModal() {
             triggerMap: triggerMap,
             zone: zoneSelect.value,
             simulationTime: simulationTimeInput.value,
+            simulationBattlesPerAction: simulationBattlesPerActionInput.value,
             houseRooms: player.houseRooms,
         };
         try {
@@ -2212,6 +2218,8 @@ function initImportExportModal() {
         zoneSelect.value = importSet["zone"];
         let simulationDuration = document.getElementById("inputSimulationTime");
         simulationDuration.value = importSet["simulationTime"];
+        let simulationBattlesPerAction = document.getElementById("inputSimulationBattlesPerAction");
+        simulationBattlesPerAction.value = importSet["simulationBattlesPerAction"];
         updateState();
         updateUI();
     });
@@ -2220,6 +2228,7 @@ function initImportExportModal() {
 function showErrorModal(error) {
     let zoneSelect = document.getElementById("selectZone");
     let simulationTimeInput = document.getElementById("inputSimulationTime");
+    let simulationBattlesPerActionInput = document.getElementById("inputSimulationBattlesPerAction");
 
     let state = {
         error: error,
@@ -2231,6 +2240,7 @@ function showErrorModal(error) {
         modalTriggers: modalTriggers,
         zone: zoneSelect.value,
         simulationTime: simulationTimeInput.value,
+        simulationBattlesPerAction: simulationBattlesPerActionInput.value,
     };
 
     for (let i = 0; i < 5; i++) {
