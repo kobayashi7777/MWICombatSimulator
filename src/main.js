@@ -1721,45 +1721,53 @@ function startSimulation() {
 
     // bot7420 All zones
     const plannetToggle = document.getElementById("plannetToggle");
-    let zones = Object.values(actionDetailMap)
+
+    let allZones = Object.values(actionDetailMap)
         .filter((action) => action.type === "/action_types/combat")
         .filter((action) => !action.combatZoneInfo?.isDungeon)
         .sort((a, b) => a.sortIndex - b.sortIndex);
     let planetZones = [];
-    for (const zone of Object.values(zones)) {
+    for (const zone of Object.values(allZones)) {
         if (zone.combatZoneInfo?.fightInfo?.bossSpawns) {
             planetZones.push(zone);
         }
     }
 
+    //
+    let list = [];
+    for (const z of planetZones) {
+        list.push(z.hrid);
+    }
+    console.log(list);
+
+    let simZones = null;
+    if (plannetToggle.checked) {
+        simZones = planetZones;
+    } else {
+        simZones = allZones;
+    }
+
+    const avoidZonesLS = localStorage.getItem("script_avoidZones");
+    if (avoidZonesLS) {
+        const avoidZonesList = JSON.parse(avoidZonesLS);
+        for (const zone of avoidZonesList) {
+            simZones = simZones.filter((action) => !action.hrid.includes(zone));
+        }
+    }
+
     allResults = [];
 
-    if (plannetToggle.checked) {
-        numOfZones = planetZones.length;
-        for (const zone of Object.values(planetZones)) {
-            let workerMessage = {
-                type: "start_simulation",
-                player: player,
-                zoneHrid: zone.hrid,
-                simulationTimeLimit: simulationTimeLimit,
-                simulationBattlesPerAction: simulationBattlesPerAction,
-            };
-            console.log(workerMessage);
-            worker.postMessage(workerMessage);
-        }
-    } else {
-        numOfZones = zones.length;
-        for (const zone of Object.values(zones)) {
-            let workerMessage = {
-                type: "start_simulation",
-                player: player,
-                zoneHrid: zone.hrid,
-                simulationTimeLimit: simulationTimeLimit,
-                simulationBattlesPerAction: simulationBattlesPerAction,
-            };
-            console.log(workerMessage);
-            worker.postMessage(workerMessage);
-        }
+    numOfZones = simZones.length;
+    for (const zone of Object.values(simZones)) {
+        let workerMessage = {
+            type: "start_simulation",
+            player: player,
+            zoneHrid: zone.hrid,
+            simulationTimeLimit: simulationTimeLimit,
+            simulationBattlesPerAction: simulationBattlesPerAction,
+        };
+        console.log(workerMessage);
+        worker.postMessage(workerMessage);
     }
 }
 
