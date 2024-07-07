@@ -1,7 +1,5 @@
 # MWICombatSimulator
 
-### How to run locally for development purposes
-
 Install dependencies: 
 
 ```bash
@@ -14,6 +12,31 @@ Build webpack bundle
 npm run build
 ```
 
-That's it. You can now open index.html in your browser of choice. You may need to enable CORS or host the site locally for it to load properly. 
+Avoid zones through localstorage:
 
-[Here](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll) is an example to integrate GitHub for local testing purposes. 
+Key:
+script_avoidZones
+
+Value:
+[
+    "/actions/combat/swamp_planet",
+    "/actions/combat/swamp_planet_elite",
+    "/actions/combat/aqua_planet",
+    "/actions/combat/aqua_planet_elite",
+    "/actions/combat/jungle_planet",
+    "/actions/combat/jungle_planet_elite",
+    "/actions/combat/gobo_planet",
+    "/actions/combat/gobo_planet_elite",
+    "/actions/combat/planet_of_the_eyes",
+    "/actions/combat/planet_of_the_eyes_elite",
+    "/actions/combat/sorcerers_tower",
+    "/actions/combat/sorcerers_tower_elite",
+    "/actions/combat/bear_with_it",
+    "/actions/combat/bear_with_it_elite",
+    "/actions/combat/golem_cave",
+    "/actions/combat/golem_cave_elite",
+    "/actions/combat/twilight_zone",
+    "/actions/combat/twilight_zone_elite",
+    "/actions/combat/infernal_abyss",
+    "/actions/combat/infernal_abyss_elite"
+]

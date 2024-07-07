@@ -1733,13 +1733,6 @@ function startSimulation() {
         }
     }
 
-    //
-    let list = [];
-    for (const z of planetZones) {
-        list.push(z.hrid);
-    }
-    console.log(list);
-
     let simZones = null;
     if (plannetToggle.checked) {
         simZones = planetZones;
@@ -1750,9 +1743,13 @@ function startSimulation() {
     const avoidZonesLS = localStorage.getItem("script_avoidZones");
     if (avoidZonesLS) {
         const avoidZonesList = JSON.parse(avoidZonesLS);
+        console.log("avoidZonesList:");
+        console.log(avoidZonesList);
         for (const zone of avoidZonesList) {
             simZones = simZones.filter((action) => !action.hrid.includes(zone));
         }
+    } else {
+        console.log("avoidZonesList null");
     }
 
     allResults = [];
