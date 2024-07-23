@@ -18,4 +18,9 @@ jobs:
         node-version: '20.2'
     - run: npm install
     - run: npm run build
-    
+
+    - name: Upload dist directory
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist-files
+        path: dist
