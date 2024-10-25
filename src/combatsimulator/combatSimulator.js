@@ -13,9 +13,11 @@ import StunExpirationEvent from "./events/stunExpirationEvent";
 import BlindExpirationEvent from "./events/blindExpirationEvent";
 import SilenceExpirationEvent from "./events/silenceExpirationEvent";
 import CurseExpirationEvent from "./events/curseExpirationEvent";
+import WeakenExpirationEvent from "./events/weakenExpirationEvent";
 import SimResult from "./simResult";
 import AbilityCastEndEvent from "./events/abilityCastEndEvent";
 import AwaitCooldownEvent from "./events/awaitCooldownEvent";
+import Monster from "./monster";
 
 const ONE_SECOND = 1e9;
 const HOT_TICK_INTERVAL = 5 * ONE_SECOND;
@@ -23,23 +25,20 @@ const DOT_TICK_INTERVAL = 5 * ONE_SECOND;
 const REGEN_TICK_INTERVAL = 10 * ONE_SECOND;
 const ENEMY_RESPAWN_INTERVAL = 3 * ONE_SECOND;
 const PLAYER_RESPAWN_INTERVAL = 150 * ONE_SECOND;
-const TRAVEL_INTERVAL = 15 * ONE_SECOND;
+let tempDungeonCount = 0;
 
 class CombatSimulator extends EventTarget {
-    constructor(player, zone) {
+    constructor(players, zone) {
         super();
-        this.players = [player];
+        this.players = players;
         this.zone = zone;
-        this.battlesPerAction = 0;
-
         this.eventQueue = new EventQueue();
-        this.simResult = new SimResult();
-        this.players[0].generatePermanentBuffs();
+        this.simResult = new SimResult(zone.hrid, players.length);
+        this.allPlayersDead = false;
     }
 
-    async simulate(simulationTimeLimit, simulationBattlesPerAction) {
+    async simulate(simulationTimeLimit) {
         this.reset();
-        this.battlesPerAction = simulationBattlesPerAction;
 
         let ticks = 0;
 
@@ -65,10 +64,20 @@ class CombatSimulator extends EventTarget {
                 this.simResult.updateTimeSpentAlive(this.simResult.timeSpentAlive[i].name, false, simulationTimeLimit);
             }
         }
-
+        this.simResult.isDungeon = this.zone.isDungeon;
+        if(this.simResult.isDungeon) {
+            this.simResult.dungeonsCompleted = this.zone.dungeonsCompleted;
+            if(this.simResult.dungeonsCompleted < 1) {
+                this.simResult.maxWaveReached = this.zone.encountersKilled - 1;
+            } else {
+                this.simResult.maxWaveReached = this.zone.dungeonSpawnInfo.maxWaves;
+            }
+        }
         this.simResult.simulatedTime = this.simulationTime;
         this.simResult.setDropRateMultipliers(this.players[0]);
-        this.simResult.setManaUsed(this.players[0]);
+        for(let i = 0; i < this.players.length; i++) {
+            this.simResult.setManaUsed(this.players[i]);
+        }
 
         if (this.zone.monsterSpawnInfo.bossSpawns) {
             for (const boss of this.zone.monsterSpawnInfo.bossSpawns) {
@@ -76,7 +85,9 @@ class CombatSimulator extends EventTarget {
             }
         }
 
-        this.simResult.eliteTier = this.zone.monsterSpawnInfo.randomSpawnInfo.spawns[0].eliteTier;
+        if(!this.zone.isDungeon) {
+            this.simResult.eliteTier = this.zone.monsterSpawnInfo.randomSpawnInfo.spawns[0].eliteTier;
+        }
 
         return this.simResult;
     }
@@ -84,7 +95,7 @@ class CombatSimulator extends EventTarget {
     reset() {
         this.simulationTime = 0;
         this.eventQueue.clear();
-        this.simResult = new SimResult();
+        this.simResult = new SimResult(this.zone.hrid, this.players.length);
     }
 
     async processEvent(event) {
@@ -129,6 +140,9 @@ class CombatSimulator extends EventTarget {
             case CurseExpirationEvent.type:
                 this.processCurseExpirationEvent(event);
                 break;
+            case WeakenExpirationEvent.type:
+                this.processWeakenExpirationEvent(event);
+                break;
             case AbilityCastEndEvent.type:
                 this.tryUseAbility(event.source, event.ability);
                 break;
@@ -145,7 +159,10 @@ class CombatSimulator extends EventTarget {
     }
 
     processCombatStartEvent(event) {
-        this.players[0].reset(this.simulationTime);
+        for(let i = 0; i < this.players.length; i++) {
+            this.players[i].generatePermanentBuffs();
+            this.players[i].reset(this.simulationTime);
+        }
         let regenTickEvent = new RegenTickEvent(this.simulationTime + REGEN_TICK_INTERVAL);
         this.eventQueue.addEvent(regenTickEvent);
 
@@ -153,11 +170,17 @@ class CombatSimulator extends EventTarget {
     }
 
     processPlayerRespawnEvent(event) {
-        this.players[0].combatDetails.currentHitpoints = this.players[0].combatDetails.maxHitpoints;
-        this.players[0].combatDetails.currentManapoints = this.players[0].combatDetails.maxManapoints;
-        this.players[0].clearBuffs();
-        this.players[0].clearCCs();
-        this.startAttacks();
+        let respawningPlayer = this.players.find(player => player.hrid === event.hrid);
+        respawningPlayer.combatDetails.currentHitpoints = respawningPlayer.combatDetails.maxHitpoints;
+        respawningPlayer.combatDetails.currentManapoints = respawningPlayer.combatDetails.maxManapoints;
+        respawningPlayer.clearBuffs();
+        respawningPlayer.clearCCs();
+        if(this.allPlayersDead) {
+            this.allPlayersDead = false;
+            this.startAttacks();
+        } else {
+            this.addNextAttackEvent(respawningPlayer);
+        }
     }
 
     processEnemyRespawnEvent(event) {
@@ -165,19 +188,31 @@ class CombatSimulator extends EventTarget {
     }
 
     startNewEncounter() {
-        this.enemies = this.zone.getRandomEncounter();
+        if(!this.zone.isDungeon) {
+            this.enemies = this.zone.getRandomEncounter();
+        } else {
+            this.enemies = this.zone.getNextWave();
+            let currentDungeonCount = this.zone.dungeonsCompleted;
+            if(currentDungeonCount > tempDungeonCount) {
+                tempDungeonCount = currentDungeonCount;
+                for(let i = 0; i < this.players.length; i++) {
+                    this.players[i].combatDetails.currentHitpoints = this.players[i].combatDetails.maxHitpoints;
+                    this.players[i].combatDetails.currentManapoints = this.players[i].combatDetails.maxManapoints;
+                }
+            }
+        }
 
         this.enemies.forEach((enemy) => {
             enemy.reset(this.simulationTime);
             this.simResult.updateTimeSpentAlive(enemy.hrid, true, this.simulationTime);
-            // console.log(enemy.hrid, "spawned");
+            //console.log(enemy.hrid, "spawned");
         });
 
         this.startAttacks();
     }
 
     startAttacks() {
-        let units = [this.players[0]];
+        let units = [...this.players];
         if (this.enemies) {
             units.push(...this.enemies);
         }
@@ -208,6 +243,21 @@ class CombatSimulator extends EventTarget {
 
         for (let i = 0; i < aliveTargets.length; i++) {
             let target = aliveTargets[i];
+            if(!event.source.isPlayer && aliveTargets.length > 1)  {
+                let cumulativeThreat = 0;
+                let cumulativeRanges = [];
+                aliveTargets.forEach(player => {
+                    let playerThreat = player.combatDetails.combatStats.threat;
+                    cumulativeThreat += playerThreat;
+                    cumulativeRanges.push({
+                        player: player,
+                        rangeStart: cumulativeThreat - playerThreat,
+                        rangeEnd: cumulativeThreat
+                    });
+                });
+                let randomValueHit = Math.random() * cumulativeThreat;
+                target = cumulativeRanges.find(range => randomValueHit >= range.rangeStart && randomValueHit < range.rangeEnd).player;
+            }
             let source = event.source;
 
             if (target.combatDetails.combatStats.parry > Math.random()) {
@@ -230,6 +280,19 @@ class CombatSimulator extends EventTarget {
                 this.eventQueue.addEvent(curseExpirationEvent);
             }
 
+            if (target.combatDetails.combatStats.weaken > 0) {
+                source.isWeakened = true;
+                source.weakenExpireTime = this.simulationTime + 15000000000;
+                let currentWeakenEvent = this.eventQueue.getMatching((event) => event.type == WeakenExpirationEvent.type && event.source == source);
+                let weakenAmount = 0;
+                if (currentWeakenEvent)
+                    weakenAmount = currentWeakenEvent.weakenAmount;
+                this.eventQueue.clearMatching((event) => event.type == WeakenExpirationEvent.type && event.source == source);
+                let weakenExpirationEvent = new WeakenExpirationEvent(source.weakenExpireTime, weakenAmount, source);
+                source.weakenPercentage = weakenExpirationEvent.weakenAmount * 2 / 100;
+                this.eventQueue.addEvent(weakenExpirationEvent);
+            }
+
             if (!mayhem || (mayhem && attackResult.didHit) || (mayhem && i == (aliveTargets.length - 1))) {
                 this.simResult.addAttack(
                     source,
@@ -248,7 +311,7 @@ class CombatSimulator extends EventTarget {
             }
 
             if (attackResult.reflectDamageDone > 0) {
-                this.simResult.addAttack(target, source, "physicalReflect", attackResult.reflectDamageDone);
+                this.simResult.addAttack(target, source, attackResult.thornType, attackResult.reflectDamageDone);
             }
 
             if (mayhem && !attackResult.didHit && i < (aliveTargets.length - 1)) {
@@ -307,15 +370,8 @@ class CombatSimulator extends EventTarget {
         if (this.enemies && !this.enemies.some((enemy) => enemy.combatDetails.currentHitpoints > 0)) {
             this.eventQueue.clearEventsOfType(AutoAttackEvent.type);
             this.eventQueue.clearEventsOfType(AbilityCastEndEvent.type);
-            if (this.battlesPerAction > 0 && (this.simResult.encounters + 1) % this.battlesPerAction == 0) {
-                this.eventQueue.clear();
-                this.zone.resetEncounters();
-                let combatStartEvent = new CombatStartEvent(this.simulationTime + TRAVEL_INTERVAL);
-                this.eventQueue.addEvent(combatStartEvent);
-            } else {
-                let enemyRespawnEvent = new EnemyRespawnEvent(this.simulationTime + ENEMY_RESPAWN_INTERVAL);
-                this.eventQueue.addEvent(enemyRespawnEvent);
-            }
+            let enemyRespawnEvent = new EnemyRespawnEvent(this.simulationTime + ENEMY_RESPAWN_INTERVAL);
+            this.eventQueue.addEvent(enemyRespawnEvent);
             this.enemies = null;
 
             this.simResult.addEncounterEnd();
@@ -325,19 +381,23 @@ class CombatSimulator extends EventTarget {
             // console.log("encounter end " + (this.simulationTime / 1000000000))
         }
 
+    this.players.forEach(player => {
+        if ((player.combatDetails.currentHitpoints <= 0) && !this.eventQueue.containsEventOfTypeAndHrid(PlayerRespawnEvent.type, player.hrid)) {
+            let playerRespawnEvent = new PlayerRespawnEvent(this.simulationTime + PLAYER_RESPAWN_INTERVAL, player.hrid);
+            this.eventQueue.addEvent(playerRespawnEvent);
+            //console.log(player.hrid + " died at " + (this.simulationTime / 1000000000));
+        }
+    });
+
         if (
-            !this.players.some((player) => player.combatDetails.currentHitpoints > 0) &&
-            !this.eventQueue.containsEventOfType(PlayerRespawnEvent.type)
+            !this.players.some((player) => player.combatDetails.currentHitpoints > 0)
         ) {
             this.eventQueue.clearEventsOfType(AutoAttackEvent.type);
             this.eventQueue.clearEventsOfType(AbilityCastEndEvent.type);
-            // 120 seconds respawn and 30 seconds traveling to battle
-            let playerRespawnEvent = new PlayerRespawnEvent(this.simulationTime + PLAYER_RESPAWN_INTERVAL);
-            this.eventQueue.addEvent(playerRespawnEvent);
-            // console.log("Player died");
-
+            //console.log("All Players died");
             encounterEnded = true;
-        }
+            this.allPlayersDead = true;
+        } 
 
         return encounterEnded;
     }
@@ -565,6 +625,11 @@ class CombatSimulator extends EventTarget {
         event.source.damageTaken = 0;
     }
 
+    processWeakenExpirationEvent(event) {
+        event.source.isWeakened = false;
+        event.source.weakenPercentage = 0;
+    }
+
     checkTriggers() {
         let triggeredSomething;
 
@@ -673,7 +738,7 @@ class CombatSimulator extends EventTarget {
 
         if (source.combatDetails.currentManapoints < ability.manaCost) {
             if (source.isPlayer && oomCheck) {
-                this.simResult.playerRanOutOfMana = true;
+                this.simResult.playerRanOutOfMana[source.hrid] = true;
             }
             return false;
         }
@@ -734,6 +799,11 @@ class CombatSimulator extends EventTarget {
                 case "/ability_effect_types/revive":
                     this.processAbilityReviveEffect(source, ability, abilityEffect);
                     break;
+                case "/ability_effect_types/promote":
+                    this.eventQueue.clearEventsForUnit(source);
+                    source = this.processAbilityPromoteEffect(source, ability, abilityEffect);
+                    this.addNextAttackEvent(source);
+                    break;
                 default:
                     throw new Error("Unsupported effect type for ability: " + ability.hrid + " effectType: " + abilityEffect.effectType);
             }
@@ -789,7 +859,7 @@ class CombatSimulator extends EventTarget {
                 throw new Error("Unsupported target type for damage ability effect: " + ability.hrid);
         }
 
-        for (const target of targets.filter((unit) => unit && unit.combatDetails.currentHitpoints > 0)) {
+        for (let target of targets.filter((unit) => unit && unit.combatDetails.currentHitpoints > 0)) {
             if (target.combatDetails.combatStats.parry > Math.random()) {
                 let tempTarget = source;
                 let tempSource = target;
@@ -812,7 +882,7 @@ class CombatSimulator extends EventTarget {
                 }
 
                 if (attackResult.reflectDamageDone > 0) {
-                    this.simResult.addAttack(tempTarget, tempSource, "physicalReflect", attackResult.reflectDamageDone);
+                    this.simResult.addAttack(tempTarget, tempSource, attackResult.thornType, attackResult.reflectDamageDone);
                 }
 
                 for (const [skill, xp] of Object.entries(attackResult.experienceGained.source)) {
@@ -840,6 +910,23 @@ class CombatSimulator extends EventTarget {
                     }
                 }
             } else {
+                targets = targets.filter((unit) => unit && unit.combatDetails.currentHitpoints > 0);
+                if(!source.isPlayer && targets.length > 1 && abilityEffect.targetType == "enemy")  {
+                    let cumulativeThreat = 0;
+                    let cumulativeRanges = [];
+                    targets.forEach(player => {
+                        let playerThreat = player.combatDetails.combatStats.threat;
+                        cumulativeThreat += playerThreat;
+                        cumulativeRanges.push({
+                            player: player,
+                            rangeStart: cumulativeThreat - playerThreat,
+                            rangeEnd: cumulativeThreat
+                        });
+                    });
+                    let randomValueHit = Math.random() * cumulativeThreat;
+                    target = cumulativeRanges.find(range => randomValueHit >= range.rangeStart && randomValueHit < range.rangeEnd).player;
+                } 
+                
                 let attackResult = CombatUtilities.processAttack(source, target, abilityEffect);
 
                 if (attackResult.didHit && abilityEffect.buffs) {
@@ -907,6 +994,19 @@ class CombatSimulator extends EventTarget {
                     this.eventQueue.addEvent(curseExpirationEvent);
                 }
 
+                if (target.combatDetails.combatStats.weaken > 0) {
+                    source.isWeakened = true;
+                    source.weakenExpireTime = this.simulationTime + 15000000000;
+                    let currentWeakenEvent = this.eventQueue.getMatching((event) => event.type == WeakenExpirationEvent.type && event.source == source);
+                    let weakenAmount = 0;
+                    if (currentWeakenEvent)
+                        weakenAmount = currentWeakenEvent.weakenAmount;
+                    this.eventQueue.clearMatching((event) => event.type == WeakenExpirationEvent.type && event.source == source);
+                    let weakenExpirationEvent = new WeakenExpirationEvent(source.weakenExpireTime, weakenAmount, source);
+                    source.weakenPercentage = weakenExpirationEvent.weakenAmount * 2 / 100;
+                    this.eventQueue.addEvent(weakenExpirationEvent);
+                }
+
                 this.simResult.addAttack(
                     source,
                     target,
@@ -915,7 +1015,7 @@ class CombatSimulator extends EventTarget {
                 );
 
                 if (attackResult.reflectDamageDone > 0) {
-                    this.simResult.addAttack(target, source, "physicalReflect", attackResult.reflectDamageDone);
+                    this.simResult.addAttack(target, source, attackResult.thornType, attackResult.reflectDamageDone);
                 }
 
                 for (const [skill, xp] of Object.entries(attackResult.experienceGained.source)) {
@@ -1002,6 +1102,7 @@ class CombatSimulator extends EventTarget {
         let reviveTarget = targets.find((unit) => unit && unit.combatDetails.currentHitpoints <= 0);
 
         if (reviveTarget) {
+            this.eventQueue.clearMatching((event) => event.type == PlayerRespawnEvent.type && event.hrid == reviveTarget.hrid);
             let amountHealed = CombatUtilities.processRevive(source, abilityEffect, reviveTarget);
             let experienceGained = CombatUtilities.calculateHealingExperience(amountHealed);
 
@@ -1017,6 +1118,12 @@ class CombatSimulator extends EventTarget {
             // console.log(source.hrid + " revived " + reviveTarget.hrid + " with " + amountHealed + " HP.");
         }
         return;
+    }
+
+    processAbilityPromoteEffect(source, ability, abilityEffect) {
+            const promotionHrids = ["/monsters/enchanted_rook", "/monsters/enchanted_knight", "/monsters/enchanted_bishop"];
+            let randomPromotionIndex = Math.floor(Math.random() * promotionHrids.length);
+            return new Monster(promotionHrids[randomPromotionIndex], source.eliteTier);
     }
 
     processAbilitySpendHpEffect(source, ability, abilityEffect) {
