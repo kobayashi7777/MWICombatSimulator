@@ -5,7 +5,7 @@ import itemDetailMap from "./combatsimulator/data/itemDetailMap.json";
 import houseRoomDetailMap from "./combatsimulator/data/houseRoomDetailMap.json";
 import Ability from "./combatsimulator/ability.js";
 import Consumable from "./combatsimulator/consumable.js";
-import HouseRoom from "./combatsimulator/houseRoom";
+import HouseRoom from "./combatsimulator/houseRoom"
 import combatTriggerDependencyDetailMap from "./combatsimulator/data/combatTriggerDependencyDetailMap.json";
 import combatTriggerConditionDetailMap from "./combatsimulator/data/combatTriggerConditionDetailMap.json";
 import combatTriggerComparatorDetailMap from "./combatsimulator/data/combatTriggerComparatorDetailMap.json";
@@ -13,7 +13,7 @@ import abilitySlotsLevelRequirementList from "./combatsimulator/data/abilitySlot
 import actionDetailMap from "./combatsimulator/data/actionDetailMap.json";
 import combatMonsterDetailMap from "./combatsimulator/data/combatMonsterDetailMap.json";
 import damageTypeDetailMap from "./combatsimulator/data/damageTypeDetailMap.json";
-import combatStyleDetailMap from "./combatsimulator/data/combatStyleDetailMap.json";
+import combatStyleDetailMap from "./combatsimulator/data/combatStyleDetailMap.json"
 
 const ONE_SECOND = 1e9;
 const ONE_HOUR = 60 * 60 * ONE_SECOND;
@@ -44,8 +44,12 @@ worker.onmessage = function (event) {
             progressbar.style.width = "100%";
             progressbar.innerHTML = "100%";
             showSimulationResult(event.data.simResult);
+            buttonStartSimulation.disabled = false;
             break;
         case "simulation_progress":
+            let progress = Math.floor(100 * event.data.progress);
+            progressbar.style.width = progress + "%";
+            progressbar.innerHTML = progress + "%";
             break;
         case "simulation_error":
             showErrorModal(event.data.error.toString());
@@ -58,21 +62,7 @@ worker.onmessage = function (event) {
 // #region Equipment
 
 function initEquipmentSection() {
-    [
-        "head",
-        "body",
-        "legs",
-        "feet",
-        "hands",
-        "main_hand",
-        "two_hand",
-        "off_hand",
-        "pouch",
-        "neck",
-        "earrings",
-        "ring",
-        "back",
-    ].forEach((type) => {
+    ["head", "body", "legs", "feet", "hands", "main_hand", "two_hand", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
         initEquipmentSelect(type);
         initEnhancementLevelInput(type);
     });
@@ -194,21 +184,7 @@ function enhancementLevelInputHandler() {
 }
 
 function updateEquipmentState() {
-    [
-        "head",
-        "body",
-        "legs",
-        "feet",
-        "hands",
-        "main_hand",
-        "two_hand",
-        "off_hand",
-        "pouch",
-        "neck",
-        "earrings",
-        "ring",
-        "back",
-    ].forEach((type) => {
+    ["head", "body", "legs", "feet", "hands", "main_hand", "two_hand", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
         let equipmentType = "/equipment_types/" + type;
         let selectType = type;
         if (type == "main_hand" || type == "two_hand") {
@@ -239,7 +215,7 @@ function updateEquipmentState() {
 document.getElementById("selectEquipment_set").onchange = changeEquipmentSetListener;
 
 function changeEquipmentSetListener() {
-    let value = this.value;
+    let value = this.value
     let optgroupType = this.options[this.selectedIndex].parentNode.label;
 
     ["head", "body", "legs", "feet", "hands"].forEach((type) => {
@@ -331,13 +307,16 @@ function updateCombatStatsUI() {
         "totalWaterResistance",
         "totalNatureResistance",
         "totalFireResistance",
-        "totalThreat",
+        "totalThreat"
     ].forEach((stat) => {
         let element = document.getElementById("combatStat_" + stat);
         element.innerHTML = Math.floor(player.combatDetails[stat]);
     });
 
-    ["abilityHaste", "tenacity"].forEach((stat) => {
+    [
+        "abilityHaste",
+        "tenacity"
+    ].forEach((stat) => {
         let element = document.getElementById("combatStat_" + stat);
         element.innerHTML = Math.floor(player.combatDetails.combatStats[stat]);
     });
@@ -351,7 +330,8 @@ function updateCombatStatsUI() {
         "lifeSteal",
         "HPRegen",
         "MPRegen",
-        "physicalReflectPower",
+        "physicalThorns",
+        "elementalThorns",
         "criticalRate",
         "criticalDamage",
         "combatExperience",
@@ -366,7 +346,7 @@ function updateCombatStatsUI() {
         "mayhem",
         "pierce",
         "curse",
-        "attackSpeed",
+        "attackSpeed"
     ].forEach((stat) => {
         let element = document.getElementById("combatStat_" + stat);
         let value = (100 * player.combatDetails.combatStats[stat]).toLocaleString([], {
@@ -507,14 +487,11 @@ function initAbilitiesSection() {
 
         let gameAbilities;
         if (i == 0) {
-            gameAbilities = Object.values(abilityDetailMap)
-                .filter((x) => x.isSpecialAbility && x.name !== "Promote")
-                .sort((a, b) => a.sortIndex - b.sortIndex);
+            gameAbilities = Object.values(abilityDetailMap).filter(x => x.isSpecialAbility && x.name !== "Promote").sort((a, b) => a.sortIndex - b.sortIndex);
         } else {
-            gameAbilities = Object.values(abilityDetailMap)
-                .filter((x) => !x.isSpecialAbility)
-                .sort((a, b) => a.sortIndex - b.sortIndex);
+            gameAbilities = Object.values(abilityDetailMap).filter(x => !x.isSpecialAbility).sort((a, b) => a.sortIndex - b.sortIndex);
         }
+
 
         for (const ability of Object.values(gameAbilities)) {
             selectElement.add(new Option(ability.name, ability.hrid));
@@ -814,9 +791,7 @@ function initZones() {
 
     // TOOD dungeon wave spawns
     let gameZones = Object.values(actionDetailMap)
-        .filter(
-            (action) => action.type == "/action_types/combat" && action.category != "/action_categories/combat/dungeons"
-        )
+        .filter((action) => action.type == "/action_types/combat" && action.category != "/action_categories/combat/dungeons")
         .sort((a, b) => a.sortIndex - b.sortIndex);
 
     for (const zone of Object.values(gameZones)) {
@@ -826,171 +801,15 @@ function initZones() {
 
 // #endregion
 
-// bot7420
-function handleAllResults(allResults) {
-    for (const result of allResults) {
-        let totalExp = 0;
-        for (const exp of Object.values(result?.experienceGained?.player)) {
-            totalExp += exp;
-        }
-        result.total = Math.round(totalExp / (result.simulatedTime / 3600000000000));
-        result.stamina = Math.round(
-            (result?.experienceGained?.player.stamina ?? 0) / (result.simulatedTime / 3600000000000)
-        );
-        result.intelligence = Math.round(
-            (result?.experienceGained?.player.intelligence ?? 0) / (result.simulatedTime / 3600000000000)
-        );
-        result.attack = Math.round(
-            (result?.experienceGained?.player.attack ?? 0) / (result.simulatedTime / 3600000000000)
-        );
-        result.power = Math.round(
-            (result?.experienceGained?.player.power ?? 0) / (result.simulatedTime / 3600000000000)
-        );
-        result.defense = Math.round(
-            (result?.experienceGained?.player.defense ?? 0) / (result.simulatedTime / 3600000000000)
-        );
-        result.ranged = Math.round(
-            (result?.experienceGained?.player.ranged ?? 0) / (result.simulatedTime / 3600000000000)
-        );
-        result.magic = Math.round(
-            (result?.experienceGained?.player.magic ?? 0) / (result.simulatedTime / 3600000000000)
-        );
-
-        result.zoneName = result.zoneHrid
-            .replaceAll("/actions/combat/", "")
-            .split("_")
-            .map((word) => {
-                return word[0].toUpperCase() + word.substring(1);
-            })
-            .join(" ");
-
-        result.profit = result.revenue - result.expenses;
-    }
-    console.log(allResults);
-
-    let html = "";
-
-    ["Total"].forEach((skill) => {
-        allResults.sort(function (x, y) {
-            if (x[skill.toLowerCase()] < y[skill.toLowerCase()]) {
-                return 1;
-            }
-            if (x[skill.toLowerCase()] > y[skill.toLowerCase()]) {
-                return -1;
-            }
-            return 0;
-        });
-
-        html += `<table class="table table-striped table-hover" id="sortTable">
-        <thead>
-        <tr>
-          <th scope="col">Zone</th>
-          <th scope="col">Death/hr</th>
-          <th scope="col">Total exp/hr</th>
-          <th scope="col">Stamina</th>
-          <th scope="col">Intelligence</th>
-          <th scope="col">Attack</th>
-          <th scope="col">Power</th>
-          <th scope="col">Defense</th>
-          <th scope="col">Ranged</th>
-          <th scope="col">Magic</th>
-          <th scope="col">Revenue(BO)</th>
-          <th scope="col">Expense(SO)</th>
-          <th scope="col">Profit/day</th>
-          <th scope="col">Profit/hr</th>
-        </tr>
-        </thead><tbody>`;
-        for (const result of allResults) {
-            html += `<tr><td>${result.zoneName}</td> <td>${
-                result?.deaths?.player
-                    ? Number(result?.deaths?.player / (result.simulatedTime / 3600000000000)).toFixed(2)
-                    : 0
-            }</td> <td>${result.total}</td> <td>${result.stamina}</td> <td>${result.intelligence}</td> <td>${
-                result.attack
-            } <td>${result.power}</td> <td>${result.defense}</td> <td>${result.ranged}</td> <td>${
-                result.magic
-            }</td><td>${result.revenue}</td><td>${result.expenses}</td><td>${result.profit}</td><td>${Math.round(
-                result.profit / 24
-            )}</td></tr>`;
-        }
-        html += `</tbody></table>`;
-    });
-
-    document.querySelector("footer").innerHTML = html;
-
-    new DataTable("#sortTable", {
-        pageLength: 100,
-        order: [[2, "desc"]],
-        initComplete: function () {
-            var api = this.api();
-            api.columns(":not(:first)").every(function () {
-                if (this.index() !== 1 && this.index() !== 10 && this.index() !== 11 && this.index() !== 13) {
-                    var col = this.index();
-                    var data = this.data()
-                        .unique()
-                        .map(function (value) {
-                            return Number(value);
-                        })
-                        .toArray()
-                        .sort(function (a, b) {
-                            return b - a;
-                        });
-                    api.cells(null, col).every(function () {
-                        var cell = Number(this.data());
-                        if (cell === data[0] && cell !== 0) {
-                            $(this.node()).css("background-color", "#32de84");
-                        }
-                    });
-                }
-
-                if (this.index() !== 1) {
-                    var col = this.index();
-                    api.cells(null, col).every(function () {
-                        //this.data(numberFormatter(this.data()));
-                    });
-                }
-            });
-        },
-    });
-}
-
-function numberFormatter(num, digits = 1) {
-    if (num === null || num === undefined) {
-        return null;
-    }
-    if (num < 0) {
-        return "-" + numberFormatter(-num);
-    }
-    const lookup = [
-        { value: 1, symbol: "" },
-        { value: 1e3, symbol: "k" },
-        { value: 1e6, symbol: "M" },
-        { value: 1e9, symbol: "B" },
-    ];
-    const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-    var item = lookup
-        .slice()
-        .reverse()
-        .find(function (item) {
-            return num >= item.value;
-        });
-    return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
-}
-
 // #region Simulation Result
 
-// bot7420
-let allResults = null;
-let numOfZones = null;
-
 function showSimulationResult(simResult) {
-    console.log(simResult);
     let expensesModalTable = document.querySelector("#expensesTable > tbody");
-    expensesModalTable.innerHTML = "<tr><th>Item</th><th>Price</th><th>Amount</th><th>Total</th></tr>";
+    expensesModalTable.innerHTML = '<tr><th>Item</th><th>Price</th><th>Amount</th><th>Total</th></tr>';
     let revenueModalTable = document.querySelector("#revenueTable > tbody");
-    revenueModalTable.innerHTML = "<tr><th>Item</th><th>Price</th><th>Amount</th><th>Total</th></tr>";
+    revenueModalTable.innerHTML = '<tr><th>Item</th><th>Price</th><th>Amount</th><th>Total</th></tr>';
     let noRngRevenueModalTable = document.querySelector("#noRngRevenueTable > tbody");
-    noRngRevenueModalTable.innerHTML = "<tr><th>Item</th><th>Price</th><th>Amount</th><th>Total</th></tr>";
+    noRngRevenueModalTable.innerHTML = '<tr><th>Item</th><th>Price</th><th>Amount</th><th>Total</th></tr>';
     showKills(simResult);
     showDeaths(simResult);
     showExperienceGained(simResult);
@@ -1002,23 +821,11 @@ function showSimulationResult(simResult) {
     showDamageDone(simResult);
     showDamageTaken(simResult);
     window.profit = window.revenue - window.expenses;
-    document.getElementById("profitSpan").innerText = window.profit.toLocaleString();
-    document.getElementById("profitPreview").innerText = window.profit.toLocaleString();
+    document.getElementById('profitSpan').innerText = window.profit.toLocaleString();
+    document.getElementById('profitPreview').innerText = window.profit.toLocaleString();
     window.noRngProfit = window.noRngRevenue - window.expenses;
-    document.getElementById("noRngProfitSpan").innerText = window.noRngProfit.toLocaleString();
-    document.getElementById("noRngProfitPreview").innerText = window.noRngProfit.toLocaleString();
-
-    // bot7420
-    allResults.push(simResult);
-
-    let progress = Math.floor(100 * (allResults.length / numOfZones));
-    progressbar.style.width = progress + "%";
-    progressbar.innerHTML = `${allResults.length} / ${numOfZones}`;
-
-    if (allResults.length === numOfZones) {
-        handleAllResults(allResults);
-        buttonStartSimulation.disabled = false;
-    }
+    document.getElementById('noRngProfitSpan').innerText = window.noRngProfit.toLocaleString();
+    document.getElementById('noRngProfitPreview').innerText = window.noRngProfit.toLocaleString();
 }
 
 function showKills(simResult) {
@@ -1058,52 +865,34 @@ function showKills(simResult) {
             if (drop.minEliteTier > simResult.eliteTier) {
                 continue;
             }
-            dropMap.set(itemDetailMap[drop.itemHrid]["name"], {
-                dropRate: Math.min(1, drop.dropRate * dropRateMultiplier),
-                number: 0,
-                dropMin: drop.minCount,
-                dropMax: drop.maxCount,
-                noRngDropAmount: 0,
-            });
+            dropMap.set(itemDetailMap[drop.itemHrid]['name'], { "dropRate": Math.min(1, drop.dropRate * dropRateMultiplier), "number": 0, "dropMin": drop.minCount, "dropMax": drop.maxCount, "noRngDropAmount": 0 });
         }
         for (const drop of combatMonsterDetailMap[monster].rareDropTable) {
             if (drop.minEliteTier > simResult.eliteTier) {
                 continue;
             }
-            rareDropMap.set(itemDetailMap[drop.itemHrid]["name"], {
-                dropRate: drop.dropRate * rareFindMultiplier,
-                number: 0,
-                dropMin: drop.minCount,
-                dropMax: drop.maxCount,
-                noRngDropAmount: 0,
-            });
+            rareDropMap.set(itemDetailMap[drop.itemHrid]['name'], { "dropRate": drop.dropRate * rareFindMultiplier, "number": 0, "dropMin": drop.minCount, "dropMax": drop.maxCount, "noRngDropAmount": 0 });
         }
 
         for (let dropObject of dropMap.values()) {
-            dropObject.noRngDropAmount +=
-                simResult.deaths[monster] * dropObject.dropRate * ((dropObject.dropMax + dropObject.dropMin) / 2);
+            dropObject.noRngDropAmount += simResult.deaths[monster] * dropObject.dropRate * ((dropObject.dropMax + dropObject.dropMin) / 2);
         }
         for (let dropObject of rareDropMap.values()) {
-            dropObject.noRngDropAmount +=
-                simResult.deaths[monster] * dropObject.dropRate * ((dropObject.dropMax + dropObject.dropMin) / 2);
+            dropObject.noRngDropAmount += simResult.deaths[monster] * dropObject.dropRate * ((dropObject.dropMax + dropObject.dropMin) / 2);
         }
 
         for (let i = 0; i < simResult.deaths[monster]; i++) {
             for (let dropObject of dropMap.values()) {
                 let chance = Math.random();
                 if (chance <= dropObject.dropRate) {
-                    let amount = Math.floor(
-                        Math.random() * (dropObject.dropMax - dropObject.dropMin + 1) + dropObject.dropMin
-                    );
+                    let amount = Math.floor(Math.random() * (dropObject.dropMax - dropObject.dropMin + 1) + dropObject.dropMin)
                     dropObject.number = dropObject.number + amount;
                 }
             }
             for (let dropObject of rareDropMap.values()) {
                 let chance = Math.random();
                 if (chance <= dropObject.dropRate) {
-                    let amount = Math.floor(
-                        Math.random() * (dropObject.dropMax - dropObject.dropMin + 1) + dropObject.dropMin
-                    );
+                    let amount = Math.floor(Math.random() * (dropObject.dropMax - dropObject.dropMin + 1) + dropObject.dropMin)
                     dropObject.number = dropObject.number + amount;
                 }
             }
@@ -1137,66 +926,99 @@ function showKills(simResult) {
     let revenueModalTable = document.querySelector("#revenueTable > tbody");
     let total = 0;
     for (let [name, dropAmount] of totalDropMap.entries()) {
-        let dropRow = createRow(["col-md-6", "col-md-6 text-end"], [name, dropAmount.toLocaleString()]);
+        let dropRow = createRow(
+            ["col-md-6", "col-md-6 text-end"],
+            [name, dropAmount.toLocaleString()]
+        );
         newDropChildren.push(dropRow);
 
-        let tableRow = '<tr class="' + name.replace(/\s+/g, "") + '"><td>';
+        let tableRow = '<tr class="' + name.replace(/\s+/g, '') + '"><td>';
         tableRow += name;
         tableRow += '</td><td contenteditable="true">';
         let price = -1;
-        let revenueSetting = document.getElementById("selectPrices_drops").value;
+        let revenueSetting = document.getElementById('selectPrices_drops').value;
         if (window.prices) {
             let item = window.prices[name];
             if (item) {
-                if (item["bid"] !== -1) {
-                    price = item["bid"];
+                if (revenueSetting == 'bid') {
+                    if (item['bid'] !== -1) {
+                        price = item['bid'];
+                    } else if (item['ask'] !== -1) {
+                        price = item['ask'];
+                    }
+                } else if (revenueSetting == 'ask') {
+                    if (item['ask'] !== -1) {
+                        price = item['ask'];
+                    } else if (item['bid'] !== -1) {
+                        price = item['bid'];
+                    }
+                }
+                if (price == -1) {
+                    price = item['vendor'];
                 }
             }
         }
         tableRow += price;
-        tableRow += "</td><td>";
+        tableRow += '</td><td>';
         tableRow += dropAmount;
-        tableRow += "</td><td>";
+        tableRow += '</td><td>';
         tableRow += price * dropAmount;
-        tableRow += "</td></tr>";
+        tableRow += '</td></tr>';
         revenueModalTable.innerHTML += tableRow;
         total += price * dropAmount;
     }
 
+
+
     let noRngRevenueModalTable = document.querySelector("#noRngRevenueTable > tbody");
     let noRngTotal = 0;
     for (let [name, dropAmount] of noRngTotalDropMap.entries()) {
-        let noRngDropRow = createRow(["col-md-6", "col-md-6 text-end"], [name, dropAmount.toLocaleString()]);
+        let noRngDropRow = createRow(
+            ["col-md-6", "col-md-6 text-end"],
+            [name, dropAmount.toLocaleString()]
+        );
         newNoRngDropChildren.push(noRngDropRow);
 
-        let tableRow = '<tr class="' + name.replace(/\s+/g, "") + '"><td>';
+        let tableRow = '<tr class="' + name.replace(/\s+/g, '') + '"><td>';
         tableRow += name;
         tableRow += '</td><td contenteditable="true">';
-        let price = 0;
-        let revenueSetting = document.getElementById("selectPrices_drops").value;
+        let price = -1;
+        let revenueSetting = document.getElementById('selectPrices_drops').value;
         if (window.prices) {
             let item = window.prices[name];
             if (item) {
-                if (item["bid"] !== -1) {
-                    price = item["bid"];
+                if (revenueSetting == 'bid') {
+                    if (item['bid'] !== -1) {
+                        price = item['bid'];
+                    } else if (item['ask'] !== -1) {
+                        price = item['ask'];
+                    }
+                } else if (revenueSetting == 'ask') {
+                    if (item['ask'] !== -1) {
+                        price = item['ask'];
+                    } else if (item['bid'] !== -1) {
+                        price = item['bid'];
+                    }
+                }
+                if (price == -1) {
+                    price = item['vendor'];
                 }
             }
         }
         tableRow += price;
-        tableRow += "</td><td>";
+        tableRow += '</td><td>';
         tableRow += dropAmount;
-        tableRow += "</td><td>";
+        tableRow += '</td><td>';
         tableRow += price * dropAmount;
-        tableRow += "</td></tr>";
+        tableRow += '</td></tr>';
         noRngRevenueModalTable.innerHTML += tableRow;
         noRngTotal += price * dropAmount;
     }
 
-    document.getElementById("revenueSpan").innerText = total.toLocaleString();
+    document.getElementById('revenueSpan').innerText = total.toLocaleString();
     window.revenue = total;
-    document.getElementById("noRngRevenueSpan").innerText = noRngTotal.toLocaleString();
+    document.getElementById('noRngRevenueSpan').innerText = noRngTotal.toLocaleString();
     window.noRngRevenue = noRngTotal;
-    simResult.revenue = Math.round(noRngTotal);
 
     let resultAccordion = document.getElementById("noRngDropsAccordion");
     showElement(resultAccordion);
@@ -1252,10 +1074,7 @@ function showHpSpent(simResult) {
         let hpSpentSources = [];
         for (const source of Object.keys(simResult.hitpointsSpent["player"])) {
             let hpSpentPerHour = (simResult.hitpointsSpent["player"][source] / hoursSimulated).toFixed(2);
-            let hpSpentRow = createRow(
-                ["col-md-6", "col-md-6 text-end"],
-                [abilityDetailMap[source].name, hpSpentPerHour]
-            );
+            let hpSpentRow = createRow(["col-md-6", "col-md-6 text-end"], [abilityDetailMap[source].name, hpSpentPerHour]);
             hpSpentSources.push(hpSpentRow);
         }
         hpSpentDiv.replaceChildren(...hpSpentSources);
@@ -1272,7 +1091,6 @@ function showConsumablesUsed(simResult) {
 
     if (!simResult.consumablesUsed["player"]) {
         resultDiv.replaceChildren(...newChildren);
-        simResult.expenses = 0;
         return;
     }
 
@@ -1288,33 +1106,45 @@ function showConsumablesUsed(simResult) {
         );
         newChildren.push(consumableRow);
 
-        let tableRow = '<tr class="' + itemDetailMap[consumable].name.replace(/\s+/g, "") + '"><td>';
+        let tableRow = '<tr class="' + itemDetailMap[consumable].name.replace(/\s+/g, '') + '"><td>';
         tableRow += itemDetailMap[consumable].name;
         tableRow += '</td><td contenteditable="true">';
-        let price = 0;
-        let expensesSetting = document.getElementById("selectPrices_consumables").value;
+        let price = -1;
+        let expensesSetting = document.getElementById('selectPrices_consumables').value;
         if (window.prices) {
             let item = window.prices[itemDetailMap[consumable].name];
             if (item) {
-                if (item["ask"] !== -1) {
-                    price = item["ask"];
+                if (expensesSetting == 'bid') {
+                    if (item['bid'] !== -1) {
+                        price = item['bid'];
+                    } else if (item['ask'] !== -1) {
+                        price = item['ask'];
+                    }
+                } else if (expensesSetting == 'ask') {
+                    if (item['ask'] !== -1) {
+                        price = item['ask'];
+                    } else if (item['bid'] !== -1) {
+                        price = item['bid'];
+                    }
+                }
+                if (price == -1) {
+                    price = item['vendor'];
                 }
             }
         }
-
         tableRow += price;
-        tableRow += "</td><td>";
+        tableRow += '</td><td>';
         tableRow += amount;
-        tableRow += "</td><td>";
+        tableRow += '</td><td>';
         tableRow += price * amount;
-        tableRow += "</td></tr>";
+        tableRow += '</td></tr>';
         expensesModalTable.innerHTML += tableRow;
         total += price * amount;
     }
 
-    document.getElementById("expensesSpan").innerText = total.toLocaleString();
+    document.getElementById('expensesSpan').innerText = total.toLocaleString();
     window.expenses = total;
-    simResult.expenses = Math.round(total);
+
     resultDiv.replaceChildren(...newChildren);
 }
 
@@ -1428,7 +1258,7 @@ function showManapointsGained(simResult) {
                 sourceText = "Regen";
                 break;
             case "manaLeech":
-                sourceText = "Mana Leech";
+                sourceText = "Mana Leech"
                 break;
             default:
                 sourceText = itemDetailMap[source].name;
@@ -1467,66 +1297,61 @@ function showDamageDone(simResult) {
     let bossTimeDiv = document.getElementById("simulationBossTime");
     bossTimeDiv.classList.add("d-none");
 
-    if (simResult.attacks["player"]) {
-        for (const [target, abilities] of Object.entries(simResult.attacks["player"])) {
-            let targetDamageDone = {};
+    for (const [target, abilities] of Object.entries(simResult.attacks["player"])) {
+        let targetDamageDone = {};
 
-            const i = simResult.timeSpentAlive.findIndex((e) => e.name === target);
-            let aliveSecondsSimulated = simResult.timeSpentAlive[i].timeSpentAlive / ONE_SECOND;
+        const i = simResult.timeSpentAlive.findIndex(e => e.name === target);
+        let aliveSecondsSimulated = simResult.timeSpentAlive[i].timeSpentAlive / ONE_SECOND;
 
-            for (const [ability, abilityCasts] of Object.entries(abilities)) {
-                let casts = Object.values(abilityCasts).reduce((prev, cur) => prev + cur, 0);
-                let misses = abilityCasts["miss"] ?? 0;
-                let damage = Object.entries(abilityCasts)
-                    .filter((entry) => entry[0] != "miss")
-                    .reduce((prev, cur) => prev + Number(cur[0]) * cur[1], 0);
+        for (const [ability, abilityCasts] of Object.entries(abilities)) {
+            let casts = Object.values(abilityCasts).reduce((prev, cur) => prev + cur, 0);
+            let misses = abilityCasts["miss"] ?? 0;
+            let damage = Object.entries(abilityCasts)
+                .filter((entry) => entry[0] != "miss")
+                .reduce((prev, cur) => prev + Number(cur[0]) * cur[1], 0);
 
-                targetDamageDone[ability] = {
+            targetDamageDone[ability] = {
+                casts,
+                misses,
+                damage,
+            };
+            if (totalDamageDone[ability]) {
+                totalDamageDone[ability].casts += casts;
+                totalDamageDone[ability].misses += misses;
+                totalDamageDone[ability].damage += damage;
+            } else {
+                totalDamageDone[ability] = {
                     casts,
                     misses,
                     damage,
                 };
-                if (totalDamageDone[ability]) {
-                    totalDamageDone[ability].casts += casts;
-                    totalDamageDone[ability].misses += misses;
-                    totalDamageDone[ability].damage += damage;
-                } else {
-                    totalDamageDone[ability] = {
-                        casts,
-                        misses,
-                        damage,
-                    };
-                }
             }
-
-            let resultDiv = document.getElementById("simulationResultDamageDoneEnemy" + enemyIndex);
-            createDamageTable(resultDiv, targetDamageDone, aliveSecondsSimulated);
-
-            let resultAccordion = document.getElementById("simulationResultDamageDoneAccordionEnemy" + enemyIndex);
-            showElement(resultAccordion);
-
-            let resultAccordionButton = document.getElementById(
-                "buttonSimulationResultDamageDoneAccordionEnemy" + enemyIndex
-            );
-            let targetName = combatMonsterDetailMap[target].name;
-            resultAccordionButton.innerHTML = "<b>Damage Done (" + targetName + ")</b>";
-
-            if (simResult.bossSpawns.includes(target)) {
-                let hoursSpentOnBoss = (aliveSecondsSimulated / 60 / 60).toFixed(2);
-                let percentSpentOnBoss = ((aliveSecondsSimulated / totalSecondsSimulated) * 100).toFixed(2);
-
-                let bossRow = createRow(
-                    ["col-md-6", "col-md-6 text-end"],
-                    [targetName, hoursSpentOnBoss + "h(" + percentSpentOnBoss + "%)"]
-                );
-                bossTimeDiv.replaceChildren(bossRow);
-
-                bossTimeHeadingDiv.classList.remove("d-none");
-                bossTimeDiv.classList.remove("d-none");
-            }
-
-            enemyIndex++;
         }
+
+        let resultDiv = document.getElementById("simulationResultDamageDoneEnemy" + enemyIndex);
+        createDamageTable(resultDiv, targetDamageDone, aliveSecondsSimulated);
+
+        let resultAccordion = document.getElementById("simulationResultDamageDoneAccordionEnemy" + enemyIndex);
+        showElement(resultAccordion);
+
+        let resultAccordionButton = document.getElementById(
+            "buttonSimulationResultDamageDoneAccordionEnemy" + enemyIndex
+        );
+        let targetName = combatMonsterDetailMap[target].name;
+        resultAccordionButton.innerHTML = "<b>Damage Done (" + targetName + ")</b>";
+
+        if (simResult.bossSpawns.includes(target)) {
+            let hoursSpentOnBoss = (aliveSecondsSimulated / 60 / 60).toFixed(2);
+            let percentSpentOnBoss = (aliveSecondsSimulated / totalSecondsSimulated * 100).toFixed(2);
+
+            let bossRow = createRow(["col-md-6", "col-md-6 text-end"], [targetName, hoursSpentOnBoss + "h(" + percentSpentOnBoss + "%)"]);
+            bossTimeDiv.replaceChildren(bossRow);
+
+            bossTimeHeadingDiv.classList.remove("d-none");
+            bossTimeDiv.classList.remove("d-none");
+        }
+
+        enemyIndex++;
     }
 
     let totalResultDiv = document.getElementById("simulationResultTotalDamageDone");
@@ -1549,7 +1374,7 @@ function showDamageTaken(simResult) {
             continue;
         }
 
-        const i = simResult.timeSpentAlive.findIndex((e) => e.name === source);
+        const i = simResult.timeSpentAlive.findIndex(e => e.name === source);
         let aliveSecondsSimulated = simResult.timeSpentAlive[i].timeSpentAlive / ONE_SECOND;
         let sourceDamageTaken = {};
 
@@ -1623,8 +1448,11 @@ function createDamageTable(resultDiv, damageDone, secondsSimulated) {
             case "damageOverTime":
                 abilityText = "Damage Over Time";
                 break;
-            case "physicalReflect":
-                abilityText = "Physical Reflect";
+            case "physicalThorns":
+                abilityText = "Physical Thorns";
+                break;
+            case "elementalThorns":
+                abilityText = "Elemental Thorns";
                 break;
             default:
                 abilityText = abilityDetailMap[ability].name;
@@ -1679,7 +1507,6 @@ function initSimulationControls() {
             return;
         }
         buttonStartSimulation.disabled = true;
-        document.querySelector("footer").innerHTML = "";
         startSimulation();
     });
 }
@@ -1714,58 +1541,19 @@ function startSimulation() {
         }
     }
 
+    let zoneSelect = document.getElementById("selectZone");
     let simulationTimeInput = document.getElementById("inputSimulationTime");
+
     let simulationTimeLimit = Number(simulationTimeInput.value) * ONE_HOUR;
-    let simulationBattlesPerActionInput = document.getElementById("inputSimulationBattlesPerAction");
-    let simulationBattlesPerAction = Number(simulationBattlesPerActionInput.value) || 0;
 
-    // bot7420 All zones
-    const plannetToggle = document.getElementById("plannetToggle");
+    let workerMessage = {
+        type: "start_simulation",
+        player: player,
+        zoneHrid: zoneSelect.value,
+        simulationTimeLimit: simulationTimeLimit,
+    };
 
-    let allZones = Object.values(actionDetailMap)
-        .filter((action) => action.type === "/action_types/combat")
-        .filter((action) => !action.combatZoneInfo?.isDungeon)
-        .sort((a, b) => a.sortIndex - b.sortIndex);
-    let planetZones = [];
-    for (const zone of Object.values(allZones)) {
-        if (zone.combatZoneInfo?.fightInfo?.bossSpawns) {
-            planetZones.push(zone);
-        }
-    }
-
-    let simZones = null;
-    if (plannetToggle.checked) {
-        simZones = planetZones;
-    } else {
-        simZones = allZones;
-    }
-
-    const avoidZonesLS = localStorage.getItem("script_avoidZones");
-    if (avoidZonesLS) {
-        const avoidZonesList = JSON.parse(avoidZonesLS);
-        console.log("avoidZonesList:");
-        console.log(avoidZonesList);
-        for (const zone of avoidZonesList) {
-            simZones = simZones.filter((action) => !action.hrid.includes(zone));
-        }
-    } else {
-        console.log("avoidZonesList null");
-    }
-
-    allResults = [];
-
-    numOfZones = simZones.length;
-    for (const zone of Object.values(simZones)) {
-        let workerMessage = {
-            type: "start_simulation",
-            player: player,
-            zoneHrid: zone.hrid,
-            simulationTimeLimit: simulationTimeLimit,
-            simulationBattlesPerAction: simulationBattlesPerAction,
-        };
-        console.log(workerMessage);
-        worker.postMessage(workerMessage);
-    }
+    worker.postMessage(workerMessage);
 }
 
 // #endregion
@@ -1907,20 +1695,7 @@ function getEquipmentSetFromUI() {
         equipmentSet.levels[skill] = Number(levelInput.value);
     });
 
-    [
-        "head",
-        "body",
-        "legs",
-        "feet",
-        "hands",
-        "weapon",
-        "off_hand",
-        "pouch",
-        "neck",
-        "earrings",
-        "ring",
-        "back",
-    ].forEach((type) => {
+    ["head", "body", "legs", "feet", "hands", "weapon", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
         let equipmentSelect = document.getElementById("selectEquipment_" + type);
         let enhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_" + type);
 
@@ -1962,20 +1737,7 @@ function loadEquipmentSetIntoUI(equipmentSet) {
         levelInput.value = equipmentSet.levels[skill] ?? 1;
     });
 
-    [
-        "head",
-        "body",
-        "legs",
-        "feet",
-        "hands",
-        "weapon",
-        "off_hand",
-        "pouch",
-        "neck",
-        "earrings",
-        "ring",
-        "back",
-    ].forEach((type) => {
+    ["head", "body", "legs", "feet", "hands", "weapon", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
         let equipmentSelect = document.getElementById("selectEquipment_" + type);
         let enhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_" + type);
 
@@ -2005,7 +1767,7 @@ function loadEquipmentSetIntoUI(equipmentSet) {
     }
 
     for (let i = 0; i < (hasSpecial ? 5 : 4); i++) {
-        let abilitySlot = hasSpecial ? i : i + 1;
+        let abilitySlot = hasSpecial ? i : (i + 1);
         let abilitySelect = document.getElementById("selectAbility_" + abilitySlot);
         let abilityLevelInput = document.getElementById("inputAbilityLevel_" + abilitySlot);
 
@@ -2021,7 +1783,7 @@ function loadEquipmentSetIntoUI(equipmentSet) {
             if (equipmentSet.houseRooms[room]) {
                 field.value = equipmentSet.houseRooms[room];
             } else {
-                field.value = "";
+                field.value = '';
             }
         }
         player.houseRooms = equipmentSet.houseRooms;
@@ -2029,7 +1791,7 @@ function loadEquipmentSetIntoUI(equipmentSet) {
         let houseRooms = Object.values(houseRoomDetailMap);
         for (const room of Object.values(houseRooms)) {
             const field = document.querySelector('[data-house-hrid="' + room.hrid + '"]');
-            field.value = "";
+            field.value = '';
             player.houseRooms[room.hrid] = 0;
         }
     }
@@ -2059,43 +1821,39 @@ function initImportExportModal() {
     exportSetButton.addEventListener("click", (event) => {
         let zoneSelect = document.getElementById("selectZone");
         let simulationTimeInput = document.getElementById("inputSimulationTime");
-        let simulationBattlesPerActionInput = document.getElementById("inputSimulationBattlesPerAction");
         let equipmentArray = [];
         for (const item in player.equipment) {
             if (player.equipment[item] != null) {
                 equipmentArray.push({
-                    itemLocationHrid: player.equipment[item].gameItem.equipmentDetail.type.replaceAll(
-                        "equipment_types",
-                        "item_locations"
-                    ),
-                    itemHrid: player.equipment[item].hrid,
-                    enhancementLevel: player.equipment[item].enhancementLevel,
+                    "itemLocationHrid": player.equipment[item].gameItem.equipmentDetail.type.replaceAll("equipment_types", "item_locations"),
+                    "itemHrid": player.equipment[item].hrid,
+                    "enhancementLevel": player.equipment[item].enhancementLevel
                 });
             }
         }
         let playerArray = {
-            attackLevel: player.attackLevel,
-            magicLevel: player.magicLevel,
-            powerLevel: player.powerLevel,
-            rangedLevel: player.rangedLevel,
-            defenseLevel: player.defenseLevel,
-            staminaLevel: player.staminaLevel,
-            intelligenceLevel: player.intelligenceLevel,
-            equipment: equipmentArray,
+            "attackLevel": player.attackLevel,
+            "magicLevel": player.magicLevel,
+            "powerLevel": player.powerLevel,
+            "rangedLevel": player.rangedLevel,
+            "defenseLevel": player.defenseLevel,
+            "staminaLevel": player.staminaLevel,
+            "intelligenceLevel": player.intelligenceLevel,
+            "equipment": equipmentArray
         };
         let abilitiesArray = [];
         for (let i = 0; i < 5; i++) {
             let abilityLevelInput = document.getElementById("inputAbilityLevel_" + i);
             let abilityName = document.getElementById("selectAbility_" + i);
-            abilitiesArray[i] = { abilityHrid: abilityName.value, level: abilityLevelInput.value };
+            abilitiesArray[i] = { "abilityHrid": abilityName.value, "level": abilityLevelInput.value };
         }
         let drinksArray = [];
         for (let i = 0; i < drinks?.length; i++) {
-            drinksArray.push({ itemHrid: drinks[i] });
+            drinksArray.push({ "itemHrid": drinks[i] });
         }
         let foodArray = [];
         for (let i = 0; i < food?.length; i++) {
-            foodArray.push({ itemHrid: food[i] });
+            foodArray.push({ "itemHrid": food[i] });
         }
         let state = {
             player: playerArray,
@@ -2105,15 +1863,12 @@ function initImportExportModal() {
             triggerMap: triggerMap,
             zone: zoneSelect.value,
             simulationTime: simulationTimeInput.value,
-            simulationBattlesPerAction: simulationBattlesPerActionInput.value,
-            houseRooms: player.houseRooms,
+            houseRooms: player.houseRooms
         };
         try {
-            navigator.clipboard
-                .writeText(JSON.stringify(state))
-                .then(() => alert("Current set has been copied to clipboard."));
+            navigator.clipboard.writeText(JSON.stringify(state)).then(() => alert("Current set has been copied to clipboard."));
         } catch (err) {
-            alert("Error copying to clipboard: " + err);
+            alert('Error copying to clipboard: ' + err);
         }
     });
 
@@ -2126,31 +1881,23 @@ function initImportExportModal() {
             levelInput.value = importSet.player[skill + "Level"];
         });
 
-        ["head", "body", "legs", "feet", "hands", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach(
-            (type) => {
-                let equipmentSelect = document.getElementById("selectEquipment_" + type);
-                let enhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_" + type);
-                let currentEquipment = importSet.player.equipment.find(
-                    (item) => item.itemLocationHrid === "/item_locations/" + type
-                );
-                if (currentEquipment !== undefined) {
-                    equipmentSelect.value = currentEquipment.itemHrid;
-                    enhancementLevelInput.value = currentEquipment.enhancementLevel;
-                } else {
-                    equipmentSelect.value = "";
-                    enhancementLevelInput.value = 0;
-                }
+        ["head", "body", "legs", "feet", "hands", "off_hand", "pouch", "neck", "earrings", "ring", "back"].forEach((type) => {
+            let equipmentSelect = document.getElementById("selectEquipment_" + type);
+            let enhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_" + type);
+            let currentEquipment = importSet.player.equipment.find(item => item.itemLocationHrid === "/item_locations/" + type);
+            if (currentEquipment !== undefined) {
+                equipmentSelect.value = currentEquipment.itemHrid;
+                enhancementLevelInput.value = currentEquipment.enhancementLevel;
+            } else {
+                equipmentSelect.value = "";
+                enhancementLevelInput.value = 0;
             }
-        );
+        });
 
         let weaponSelect = document.getElementById("selectEquipment_weapon");
         let weaponEnhancementLevelInput = document.getElementById("inputEquipmentEnhancementLevel_weapon");
-        let mainhandWeapon = importSet.player.equipment.find(
-            (item) => item.itemLocationHrid === "/item_locations/main_hand"
-        );
-        let twohandWeapon = importSet.player.equipment.find(
-            (item) => item.itemLocationHrid === "/item_locations/two_hand"
-        );
+        let mainhandWeapon = importSet.player.equipment.find(item => item.itemLocationHrid === "/item_locations/main_hand");
+        let twohandWeapon = importSet.player.equipment.find(item => item.itemLocationHrid === "/item_locations/two_hand");
         if (mainhandWeapon !== undefined) {
             weaponSelect.value = mainhandWeapon.itemHrid;
             weaponEnhancementLevelInput.value = mainhandWeapon.enhancementLevel;
@@ -2184,7 +1931,7 @@ function initImportExportModal() {
         }
 
         for (let i = 0; i < (hasSpecial ? 5 : 4); i++) {
-            let abilitySlot = hasSpecial ? i : i + 1;
+            let abilitySlot = hasSpecial ? i : (i + 1);
             let abilitySelect = document.getElementById("selectAbility_" + abilitySlot);
             let abilityLevelInput = document.getElementById("inputAbilityLevel_" + abilitySlot);
             if (importSet.abilities[i] != null) {
@@ -2206,7 +1953,7 @@ function initImportExportModal() {
                 if (importSet.houseRooms[room]) {
                     field.value = importSet.houseRooms[room];
                 } else {
-                    field.value = "";
+                    field.value = '';
                 }
             }
             player.houseRooms = importSet.houseRooms;
@@ -2214,7 +1961,7 @@ function initImportExportModal() {
             let houseRooms = Object.values(houseRoomDetailMap);
             for (const room of Object.values(houseRooms)) {
                 const field = document.querySelector('[data-house-hrid="' + room.hrid + '"]');
-                field.value = "";
+                field.value = '';
                 player.houseRooms[room.hrid] = 0;
             }
         }
@@ -2223,8 +1970,6 @@ function initImportExportModal() {
         zoneSelect.value = importSet["zone"];
         let simulationDuration = document.getElementById("inputSimulationTime");
         simulationDuration.value = importSet["simulationTime"];
-        let simulationBattlesPerAction = document.getElementById("inputSimulationBattlesPerAction");
-        simulationBattlesPerAction.value = importSet["simulationBattlesPerAction"];
         updateState();
         updateUI();
     });
@@ -2233,7 +1978,6 @@ function initImportExportModal() {
 function showErrorModal(error) {
     let zoneSelect = document.getElementById("selectZone");
     let simulationTimeInput = document.getElementById("inputSimulationTime");
-    let simulationBattlesPerActionInput = document.getElementById("inputSimulationBattlesPerAction");
 
     let state = {
         error: error,
@@ -2245,7 +1989,6 @@ function showErrorModal(error) {
         modalTriggers: modalTriggers,
         zone: zoneSelect.value,
         simulationTime: simulationTimeInput.value,
-        simulationBattlesPerAction: simulationBattlesPerActionInput.value,
     };
 
     for (let i = 0; i < 5; i++) {
@@ -2261,105 +2004,49 @@ function showErrorModal(error) {
 }
 
 window.prices;
-fetchPrices();
 
 async function fetchPrices() {
-    if (window.prices?.["Coin"]?.["bid"] === 1) {
-        console.log(window.prices);
-        return;
-    }
     try {
-        const response = await fetch("https://raw.githubusercontent.com/holychikenz/MWIApi/main/milkyapi.json");
+        const response = await fetch('https://raw.githubusercontent.com/holychikenz/MWIApi/main/milkyapi.json');
         if (!response.ok) {
-            console.error("fetchPrices response not ok");
+            throw new Error('Error fetching prices');
         }
         const pricesJson = await response.json();
-        window.prices = pricesJson["market"];
-        window.prices["Coin"] = { ask: 1, bid: 1, vendor: 1 };
+        window.prices = pricesJson['market'];
+        window.prices["Coin"] = { "ask": 1, "bid": 1, "vendor": 1 }
         window.prices["Small Treasure Chest"] = {
-            ask:
-                7500 +
-                3750 +
-                0.6 * window.prices["Pearl"]["ask"] +
-                0.4 * window.prices["Amber"]["ask"] +
-                0.15 * window.prices["Garnet"]["ask"] +
-                0.15 * window.prices["Jade"]["ask"] +
-                0.15 * window.prices["Amethyst"]["ask"],
-            bid:
-                7500 +
-                3750 +
-                0.6 * window.prices["Pearl"]["bid"] +
-                0.4 * window.prices["Amber"]["bid"] +
-                0.15 * window.prices["Garnet"]["bid"] +
-                0.15 * window.prices["Jade"]["bid"] +
-                0.15 * window.prices["Amethyst"]["bid"],
-            vendor:
-                7500 +
-                3750 +
-                0.6 * window.prices["Pearl"]["vendor"] +
-                0.4 * window.prices["Amber"]["vendor"] +
-                0.15 * window.prices["Garnet"]["vendor"] +
-                0.15 * window.prices["Jade"]["vendor"] +
-                0.15 * window.prices["Amethyst"]["vendor"],
-        };
+            "ask": (7500 + 3750 + 0.6 * window.prices["Pearl"]["ask"] + 0.4 * window.prices["Amber"]["ask"]
+                + 0.15 * window.prices["Garnet"]["ask"] + 0.15 * window.prices["Jade"]["ask"]
+                + 0.15 * window.prices["Amethyst"]["ask"]),
+            "bid": (7500 + 3750 + 0.6 * window.prices["Pearl"]["bid"] + 0.4 * window.prices["Amber"]["bid"]
+                + 0.15 * window.prices["Garnet"]["bid"] + 0.15 * window.prices["Jade"]["bid"]
+                + 0.15 * window.prices["Amethyst"]["bid"]),
+            "vendor": (7500 + 3750 + 0.6 * window.prices["Pearl"]["vendor"] + 0.4 * window.prices["Amber"]["vendor"]
+                + 0.15 * window.prices["Garnet"]["vendor"] + 0.15 * window.prices["Jade"]["vendor"]
+                + 0.15 * window.prices["Amethyst"]["vendor"])
+        }
         window.prices["Medium Treasure Chest"] = {
-            ask:
-                18000 +
-                9000 +
-                0.6 * 1.5 * window.prices["Pearl"]["ask"] +
-                0.4 * 1.5 * window.prices["Amber"]["ask"] +
-                0.3 * 1.5 * window.prices["Garnet"]["ask"] +
-                0.3 * 1.5 * window.prices["Jade"]["ask"] +
-                0.3 * 1.5 * window.prices["Amethyst"]["ask"] +
-                0.15 * window.prices["Moonstone"]["ask"],
-            bid:
-                18000 +
-                9000 +
-                0.6 * 1.5 * window.prices["Pearl"]["bid"] +
-                0.4 * 1.5 * window.prices["Amber"]["bid"] +
-                0.3 * 1.5 * window.prices["Garnet"]["bid"] +
-                0.3 * 1.5 * window.prices["Jade"]["bid"] +
-                0.3 * 1.5 * window.prices["Amethyst"]["bid"] +
-                0.15 * window.prices["Moonstone"]["bid"],
-            vendor:
-                18000 +
-                9000 +
-                0.6 * 1.5 * window.prices["Pearl"]["vendor"] +
-                0.4 * 1.5 * window.prices["Amber"]["vendor"] +
-                0.3 * 1.5 * window.prices["Garnet"]["vendor"] +
-                0.3 * 1.5 * window.prices["Jade"]["vendor"] +
-                0.3 * 1.5 * window.prices["Amethyst"]["vendor"] +
-                0.15 * window.prices["Moonstone"]["vendor"],
-        };
+            "ask": (18000 + 9000 + 0.6 * 1.5 * window.prices["Pearl"]["ask"] + 0.4 * 1.5 * window.prices["Amber"]["ask"]
+                + 0.3 * 1.5 * window.prices["Garnet"]["ask"] + 0.3 * 1.5 * window.prices["Jade"]["ask"]
+                + 0.3 * 1.5 * window.prices["Amethyst"]["ask"] + 0.15 * window.prices["Moonstone"]["ask"]),
+            "bid": (18000 + 9000 + 0.6 * 1.5 * window.prices["Pearl"]["bid"] + 0.4 * 1.5 * window.prices["Amber"]["bid"]
+                + 0.3 * 1.5 * window.prices["Garnet"]["bid"] + 0.3 * 1.5 * window.prices["Jade"]["bid"]
+                + 0.3 * 1.5 * window.prices["Amethyst"]["bid"] + 0.15 * window.prices["Moonstone"]["bid"]),
+            "vendor": (18000 + 9000 + 0.6 * 1.5 * window.prices["Pearl"]["vendor"] + 0.4 * 1.5 * window.prices["Amber"]["vendor"]
+                + 0.3 * 1.5 * window.prices["Garnet"]["vendor"] + 0.3 * 1.5 * window.prices["Jade"]["vendor"]
+                + 0.3 * 1.5 * window.prices["Amethyst"]["vendor"] + 0.15 * window.prices["Moonstone"]["vendor"])
+        }
         window.prices["Large Treasure Chest"] = {
-            ask:
-                45000 +
-                22500 +
-                0.6 * 2 * window.prices["Pearl"]["ask"] +
-                0.4 * 2 * window.prices["Amber"]["ask"] +
-                0.4 * 2 * window.prices["Garnet"]["ask"] +
-                0.4 * 2 * window.prices["Jade"]["ask"] +
-                0.4 * 2 * window.prices["Amethyst"]["ask"] +
-                0.4 * 1.5 * window.prices["Moonstone"]["ask"],
-            bid:
-                45000 +
-                22500 +
-                0.6 * 2 * window.prices["Pearl"]["bid"] +
-                0.4 * 2 * window.prices["Amber"]["bid"] +
-                0.4 * 2 * window.prices["Garnet"]["bid"] +
-                0.4 * 2 * window.prices["Jade"]["bid"] +
-                0.4 * 2 * window.prices["Amethyst"]["bid"] +
-                0.4 * 1.5 * window.prices["Moonstone"]["bid"],
-            vendor:
-                45000 +
-                22500 +
-                0.6 * 2 * window.prices["Pearl"]["vendor"] +
-                0.4 * 2 * window.prices["Amber"]["vendor"] +
-                0.4 * 2 * window.prices["Garnet"]["vendor"] +
-                0.4 * 2 * window.prices["Jade"]["vendor"] +
-                0.4 * 2 * window.prices["Amethyst"]["vendor"] +
-                0.4 * 1.5 * window.prices["Moonstone"]["vendor"],
-        };
+            "ask": (45000 + 22500 + 0.6 * 2 * window.prices["Pearl"]["ask"] + 0.4 * 2 * window.prices["Amber"]["ask"]
+                + 0.4 * 2 * window.prices["Garnet"]["ask"] + 0.4 * 2 * window.prices["Jade"]["ask"]
+                + 0.4 * 2 * window.prices["Amethyst"]["ask"] + 0.4 * 1.5 * window.prices["Moonstone"]["ask"]),
+            "bid": (45000 + 22500 + 0.6 * 2 * window.prices["Pearl"]["bid"] + 0.4 * 2 * window.prices["Amber"]["bid"]
+                + 0.4 * 2 * window.prices["Garnet"]["bid"] + 0.4 * 2 * window.prices["Jade"]["bid"]
+                + 0.4 * 2 * window.prices["Amethyst"]["bid"] + 0.4 * 1.5 * window.prices["Moonstone"]["bid"]),
+            "vendor": (45000 + 22500 + 0.6 * 2 * window.prices["Pearl"]["vendor"] + 0.4 * 2 * window.prices["Amber"]["vendor"]
+                + 0.4 * 2 * window.prices["Garnet"]["vendor"] + 0.4 * 2 * window.prices["Jade"]["vendor"]
+                + 0.4 * 2 * window.prices["Amethyst"]["vendor"] + 0.4 * 1.5 * window.prices["Moonstone"]["vendor"])
+        }
     } catch (error) {
         console.error(error);
     }
@@ -2371,70 +2058,70 @@ document.getElementById("buttonGetPrices").onclick = async () => {
 
 document.addEventListener("input", (e) => {
     let element = e.target;
-    if (element.tagName == "TD" && element.parentNode.parentNode.parentNode.classList.value.includes("profit-table")) {
+    if (element.tagName == "TD" && element.parentNode.parentNode.parentNode.classList.value.includes('profit-table')) {
         let tableId = element.parentNode.parentNode.parentNode.id;
-        let row = element.parentNode.querySelectorAll("td");
+        let row = element.parentNode.querySelectorAll('td');
         let item = row[0].innerText;
         let newPrice = element.innerText;
 
-        let revenueSetting = document.getElementById("selectPrices_drops").value;
-        let expensesSetting = document.getElementById("selectPrices_consumables").value;
+        let revenueSetting = document.getElementById('selectPrices_drops').value;
+        let expensesSetting = document.getElementById('selectPrices_consumables').value;
 
         let expensesDifference = 0;
         let revenueDifference = 0;
         let noRngRevenueDifference = 0;
 
-        if (tableId == "expensesTable") {
-            expensesDifference = updateTable("expensesTable", item, newPrice);
+        if (tableId == 'expensesTable') {
+            expensesDifference = updateTable('expensesTable', item, newPrice);
             if (revenueSetting == expensesSetting) {
-                revenueDifference = updateTable("revenueTable", item, newPrice);
-                noRngRevenueDifference = updateTable("noRngRevenueTable", item, newPrice);
+                revenueDifference = updateTable('revenueTable', item, newPrice);
+                noRngRevenueDifference = updateTable('noRngRevenueTable', item, newPrice);
             }
             if (window.prices) {
-                if (expensesSetting == "bid") {
-                    window.prices[item]["bid"] = newPrice;
+                if (expensesSetting == 'bid') {
+                    window.prices[item]['bid'] = newPrice;
                 } else {
-                    window.prices[item]["ask"] = newPrice;
+                    window.prices[item]['ask'] = newPrice;
                 }
             }
         } else {
-            revenueDifference = updateTable("revenueTable", item, newPrice);
-            noRngRevenueDifference = updateTable("noRngRevenueTable", item, newPrice);
+            revenueDifference = updateTable('revenueTable', item, newPrice);
+            noRngRevenueDifference = updateTable('noRngRevenueTable', item, newPrice);
             if (revenueSetting == expensesSetting) {
-                expensesDifference = updateTable("expensesTable", item, newPrice);
+                expensesDifference = updateTable('expensesTable', item, newPrice);
             }
             if (window.prices) {
-                if (revenueSetting == "bid") {
-                    window.prices[item]["bid"] = newPrice;
+                if (revenueSetting == 'bid') {
+                    window.prices[item]['bid'] = newPrice;
                 } else {
-                    window.prices[item]["ask"] = newPrice;
+                    window.prices[item]['ask'] = newPrice;
                 }
             }
         }
 
         window.expenses += expensesDifference;
-        document.getElementById("expensesSpan").innerText = window.expenses.toLocaleString();
+        document.getElementById('expensesSpan').innerText = window.expenses.toLocaleString();
         window.revenue += revenueDifference;
-        document.getElementById("revenueSpan").innerText = window.revenue.toLocaleString();
+        document.getElementById('revenueSpan').innerText = window.revenue.toLocaleString();
         window.noRngRevenue += noRngRevenueDifference;
-        document.getElementById("noRngRevenueSpan").innerText = window.noRngRevenue.toLocaleString();
+        document.getElementById('noRngRevenueSpan').innerText = window.noRngRevenue.toLocaleString();
 
         window.profit = window.revenue - window.expenses;
-        document.getElementById("profitPreview").innerText = window.profit.toLocaleString();
-        document.getElementById("profitSpan").innerText = window.profit.toLocaleString();
+        document.getElementById('profitPreview').innerText = window.profit.toLocaleString();
+        document.getElementById('profitSpan').innerText = window.profit.toLocaleString();
         window.noRngProfit = window.noRngRevenue - window.expenses;
-        document.getElementById("noRngProfitSpan").innerText = window.noRngProfit.toLocaleString();
-        document.getElementById("noRngProfitPreview").innerText = window.noRngProfit.toLocaleString();
+        document.getElementById('noRngProfitSpan').innerText = window.noRngProfit.toLocaleString();
+        document.getElementById('noRngProfitPreview').innerText = window.noRngProfit.toLocaleString();
     }
 });
 
 function updateTable(tableId, item, price) {
-    let row = document.querySelector("#" + tableId + " ." + item.replace(/\s+/g, ""));
+    let row = document.querySelector('#' + tableId + ' .' + item.replace(/\s+/g, ''));
     if (row == null) {
         return 0;
     }
 
-    row = row.querySelectorAll("td");
+    row = row.querySelectorAll('td');
     let priceTd = row[1];
     let amountTd = row[2];
     let totalTd = row[3];
@@ -2466,27 +2153,25 @@ function updateUI() {
     updateAbilityUI();
 }
 
-const darkModeToggle = document.getElementById("darkModeToggle");
+const darkModeToggle = document.getElementById('darkModeToggle');
 const body = document.body;
 
-if (localStorage.getItem("darkModeEnabled") === "true") {
-    body.classList.add("dark-mode");
-    const tables = document.getElementsByClassName("profit-table");
+if (localStorage.getItem('darkModeEnabled') === 'true') {
+    body.classList.add('dark-mode');
+    const tables = document.getElementsByClassName('profit-table');
     for (const table of tables) {
-        table.classList.toggle("table-striped");
+        table.classList.toggle('table-striped');
     }
     darkModeToggle.checked = true;
-} else {
-    document.querySelector("html").setAttribute("data-bs-theme", "light");
 }
 
-darkModeToggle.addEventListener("change", () => {
-    body.classList.toggle("dark-mode");
-    const tables = document.getElementsByClassName("profit-table");
+darkModeToggle.addEventListener('change', () => {
+    body.classList.toggle('dark-mode');
+    const tables = document.getElementsByClassName('profit-table');
     for (const table of tables) {
-        table.classList.toggle("table-striped");
+        table.classList.toggle('table-striped');
     }
-    localStorage.setItem("darkModeEnabled", darkModeToggle.checked);
+    localStorage.setItem('darkModeEnabled', darkModeToggle.checked);
 });
 
 initEquipmentSection();

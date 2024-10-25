@@ -3,9 +3,8 @@ import CombatEvent from "./combatEvent";
 class PlayerRespawnEvent extends CombatEvent {
     static type = "playerRespawn";
 
-    constructor(time, hrid) {
+    constructor(time) {
         super(PlayerRespawnEvent.type, time);
-        this.hrid = hrid;
     }
 }
 

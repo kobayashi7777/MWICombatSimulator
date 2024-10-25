@@ -1,5 +1,5 @@
 class SimResult {
-    constructor(zoneName, numberOfPlayers) {
+    constructor() {
         this.deaths = {};
         this.experienceGained = {};
         this.encounters = 0;
@@ -9,22 +9,12 @@ class SimResult {
         this.manapointsGained = {};
         this.dropRateMultiplier = 1;
         this.rareFindMultiplier = 1;
-        this.playerRanOutOfMana = {"player1" : false,
-                                   "player2" : false,
-                                   "player3" : false,
-                                   "player4" : false,
-                                   "player5" : false
-        };
+        this.playerRanOutOfMana = false;
         this.manaUsed = {};
         this.timeSpentAlive = [];
         this.bossSpawns = [];
         this.eliteTier = 0;
         this.hitpointsSpent = {};
-        this.zoneName = zoneName;
-        this.isDungeon = false;
-        this.dungeonsCompleted = 0;
-        this.maxWaveReached = 0;
-        this.numberOfPlayers = numberOfPlayers;
     }
 
     addDeath(unit) {
@@ -132,9 +122,8 @@ class SimResult {
     }
 
     setManaUsed(unit) {
-        this.manaUsed[unit.hrid] = {};
         for (let [key, value] of unit.abilityManaCosts.entries()) {
-            this.manaUsed[unit.hrid][key] = value;
+            this.manaUsed[key] = value;
         }
     }
 
